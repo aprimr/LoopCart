@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
+
+import SkeletonNotification from "./Skeletons/NotificationSkeleton";
 import notificationColor from "../utils/notificationColor";
 import timeCalc from "../utils/timeCalc";
 
@@ -32,8 +34,6 @@ import {
 } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
-
-import {} from "lucide-react";
 
 function Navbar() {
   const [notifications, setNotifications] = useState([
@@ -156,6 +156,7 @@ function Navbar() {
       category: "ACCOUNT_SUSPENDED",
     },
   ]);
+  // const [notifications, setNotifications] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const navigate = useNavigate();
@@ -167,40 +168,34 @@ function Navbar() {
 
   return (
     <>
-      <nav className="w-full h-16 bg-white border-b border-gray-300 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
+      <nav className="w-full h-16 bg-white dark:bg-black border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
         <div className="max-w-screen-xl mx-auto h-full px-4 flex items-center justify-between">
           {/* Logo */}
           <NavLink
             to="/"
-            className="text-black font-semibold text-lg sm:text-xl"
+            className="text-black dark:text-white font-semibold text-lg sm:text-xl"
           >
             Loop<span className="text-blue-500">Cart</span>
           </NavLink>
 
           {/* Menu for large screens */}
-          <div className="hidden sm:flex space-x-6 text-black text-sm sm:text-base font-normal">
-            <NavLink to="/" className="hover:text-blue-500 transition">
-              Home
-            </NavLink>
-            <NavLink to="/explore" className="hover:text-blue-500 transition">
+          <div className="hidden sm:flex space-x-6 text-black dark:text-white text-sm sm:text-base font-normal">
+            <NavLink to="/explore" className="hover:text-blue-400 transition">
               Explore
             </NavLink>
             <NavLink
               to="/categories"
-              className="hover:text-blue-500 transition"
+              className="hover:text-blue-400 transition"
             >
               Categories
             </NavLink>
-            <NavLink to="/account" className="hover:text-blue-500 transition">
-              My Account
-            </NavLink>
             <NavLink
               to="/flash-sale"
-              className="hover:text-blue-500 transition"
+              className="hover:text-blue-400 transition"
             >
               Flash Sale
             </NavLink>
-            <NavLink to="/wishlist" className="hover:text-blue-500 transition">
+            <NavLink to="/wishlist" className="hover:text-blue-400 transition">
               Wishlist
             </NavLink>
           </div>
@@ -213,7 +208,7 @@ function Navbar() {
                 className="relative"
               >
                 <Bell className="w-6 h-6 text-blue-500" />
-                <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white bg-red-600 rounded-full"></div>
+                <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-500 rounded-full"></div>
               </button>
             </div>
             <motion.button
@@ -233,10 +228,10 @@ function Navbar() {
               className="relative"
             >
               <Bell className="w-6 h-6 text-blue-500" />
-              <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white bg-red-600 rounded-full"></div>
+              <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-600 rounded-full"></div>
             </button>
             <button onClick={() => setDrawerOpen(true)}>
-              <RiMenu3Line className="w-6 h-6 text-black" />
+              <RiMenu3Line className="w-6 h-6 text-black dark:text-white" />
             </button>
           </div>
         </div>
@@ -253,7 +248,7 @@ function Navbar() {
               animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/30 backdrop-blur-xl z-40"
+              className="fixed inset-0 bg-white/30 dark:bg-black/30 backdrop-blur-3xl z-40"
               onClick={() => setDrawerOpen(false)}
             />
 
@@ -264,85 +259,87 @@ function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 w-64 h-full bg-white/20 backdrop-blur-lg border-l border-white/20 shadow-xl z-50 px-4 pt-[18px] pb-[6px] flex flex-col"
+              className="fixed top-0 right-0 w-64 h-full bg-white dark:bg-black backdrop-blur-lg border-l border-white/20 shadow-xl z-50 px-4 pt-[18px] pb-[6px] flex flex-col"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold text-black">Menu</h2>
+                <h2 className="text-lg font-semibold text-black dark:text-white">
+                  Menu
+                </h2>
                 <button onClick={() => setDrawerOpen(false)}>
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </button>
               </div>
               {/* Menu Items with Icons */}
               <div className="flex-grow space-y-4">
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/")}
                 >
-                  <House className="w-5 h-5 text-black" />
+                  <House className="w-5 h-5" />
                   <span>Home</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/explore")}
                 >
-                  <Compass className="w-5 h-5 text-black" />
+                  <Compass className="w-5 h-5" />
                   <span>Explore</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/categories")}
                 >
-                  <Package className="w-5 h-5 text-black" />
+                  <Package className="w-5 h-5" />
                   <span>Categories</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/flash-sale")}
                 >
-                  <BadgePercent className="w-5 h-5 text-black" />
+                  <BadgePercent className="w-5 h-5" />
                   <span>Flash Sale</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/wishlist")}
                 >
-                  <Heart className="w-5 h-5 text-black" />
+                  <Heart className="w-5 h-5" />
                   <span>Wishlist</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/wishlist")}
                 >
-                  <NotepadText className="w-5 h-5 text-black" />
+                  <NotepadText className="w-5 h-5" />
                   <span>My Orders</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/account")}
                 >
-                  <User className="w-5 h-5 text-black" />
+                  <User className="w-5 h-5" />
                   <span>My Account</span>
                 </motion.div>
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
+                  className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/settings")}
                 >
-                  <Settings className="w-5 h-5 text-black" />
+                  <Settings className="w-5 h-5" />
                   <span>Settings</span>
                 </motion.div>
 
@@ -360,7 +357,7 @@ function Navbar() {
                     whileTap={{ scale: 0.9 }}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 text-blue-500 bg-white/50 backdrop-blur-lg font-medium py-1  rounded"
+                    className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 text-blue-500 bg-white/50 dark:bg-black dark:text-white backdrop-blur-lg font-medium py-1  rounded"
                     onClick={() => handleNavigate("/register")}
                   >
                     Register
@@ -369,8 +366,8 @@ function Navbar() {
               </div>
 
               {/* Drawer Footer */}
-              <div className="mt-auto py-2 border-t border-b border-black/20 font-poppins">
-                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black">
+              <div className="mt-auto py-2 border-t border-b border-black/20 dark:border-white/20 font-poppins">
+                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black dark:text-white">
                   <a
                     href="#"
                     onClick={() => setDrawerOpen(false)}
@@ -388,7 +385,7 @@ function Navbar() {
                     <ArrowUpRight className="w-3 h-3 inline" />
                   </a>
                 </div>
-                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black mt-2 font-poppins">
+                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black dark:text-white mt-2 font-poppins">
                   <a
                     href="#"
                     onClick={() => setDrawerOpen(false)}
@@ -421,13 +418,13 @@ function Navbar() {
                 {/* Source */}
                 <div
                   onClick={() => (window.location.href = "https://github.com")}
-                  className="flex items-center gap-1 text-xs text-black font-poppins hover:text-blue-500"
+                  className="flex items-center gap-1 text-xs text-black dark:text-white font-poppins hover:text-blue-500"
                 >
                   <a href="https://github.com/loopcart/loopcart">View Source</a>
                   <SquareArrowOutUpRight className="w-3 h-3" />
                 </div>
                 {/* Social */}
-                <div className="flex items-center gap-2">
+                <div className="text-black dark:text-white flex items-center gap-2">
                   <a
                     href="#"
                     className="hover:text-blue-500"
@@ -453,32 +450,32 @@ function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="absolute top-0 right-0 z-50 w-full max-w-[400px] h-screen bg-white border-l border-gray-300"
+            className="absolute top-0 right-0 z-50 w-full max-w-[400px] h-screen bg-white dark:bg-black border-l border-gray-300 dark:border-gray-600"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="shrink-0 h-16 flex items-center justify-between px-4 py-2 border-b border-gray-300">
-                <h1 className="text-lg font-poppins font-semibold">
+              <div className="shrink-0 h-16 flex items-center justify-between px-4 py-2 border-b border-gray-300 dark:border-gray-600">
+                <h1 className="text-black dark:text-white text-lg font-poppins font-semibold">
                   LoopCart <span className="text-blue-500">Bell </span>
                   <BellRing className="text-blue-500 inline h-5 w-5" />
                 </h1>
                 <button onClick={() => setNotificationOpen(false)}>
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </button>
               </div>
 
               {/* Notification Content */}
-              <div className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto">
+              <div className="flex flex-col flex-1 gap-4 p-4 overflow-y-auto">
                 {/* Actions */}
-                <div className="flex items-center justify-around border-b border-gray-300  font-rubik pb-4 gap-4">
-                  <div className="py-1 px-4 flex justify-center items-center gap-2 bg-black/85 hover:bg-black/70 text-white rounded text-sm font-medium cursor-pointer">
+                <div className="flex items-center justify-around border-b border-gray-300 dark:border-gray-600 font-rubik pb-4 gap-4">
+                  <div className="py-1 px-4 flex justify-center items-center gap-2 bg-black/85 dark:bg-white/90 text-white dark:text-black rounded text-sm font-medium cursor-pointer">
                     <CheckCheck className="h-4 w-4" />
                     <p>Mark As Read</p>
                   </div>
-                  <div className="h-full w-[2px] bg-gray-200/95 rounded text-sm font-medium" />
+                  <div className="h-full w-[2px] bg-gray-200/95 dark:bg-gray-600/95 rounded text-sm font-medium" />
                   <div
                     onClick={() => setNotifications([])}
-                    className="py-1 px-4 flex justify-center items-center gap-2 bg-rose-400 hover:bg-rose-500/85 text-white rounded text-sm font-medium cursor-pointer"
+                    className="py-1 px-4 flex justify-center items-center gap-2 bg-rose-500 text-white rounded text-sm font-medium cursor-pointer"
                   >
                     <Trash className="h-4 w-4" />
                     <p>Delete All</p>
@@ -502,7 +499,7 @@ function Navbar() {
                         duration: 2,
                         ease: "easeInOut",
                       }}
-                      className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-50 shadow-inner"
+                      className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-50 dark:bg-gray-900 shadow-inner"
                     >
                       <BellRing className="w-12 h-12 text-blue-500" />
                     </motion.div>
@@ -511,7 +508,7 @@ function Navbar() {
                       initial={{ y: 10, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.2, duration: 0.4 }}
-                      className="text-xl font-semibold font-poppins text-gray-700"
+                      className="text-xl font-semibold font-poppins text-gray-700 dark:text-gray-200"
                     >
                       You're all caught up!
                     </motion.h1>
@@ -535,6 +532,8 @@ function Navbar() {
                     setNotificationOpen={setNotificationOpen}
                   />
                 ))}
+                {/* Skeleton */}
+                <SkeletonNotification />
               </div>
             </div>
           </motion.div>
@@ -558,17 +557,21 @@ const Notification = ({ notification }) => {
         {/* Notification dot */}
         {!notification.read && (
           <div
-            className={`absolute top-0 right-1 h-3 w-3 bg-rose-500 border-2 border-white rounded-full`}
+            className={`absolute top-0 right-1 h-3 w-3 bg-rose-500 border-2 border-white dark:border-black rounded-full`}
           />
         )}
       </div>
       <div className="flex flex-col flex-1">
         <div className="flex flex-col">
           <div className="flex items-center justify-between">
-            <h1 className="text-sm font-medium">{notification.title}</h1>
-            <h6 className="text-xs">{timeCalc(notification.date)}</h6>
+            <h1 className="text-black dark:text-white text-sm font-medium">
+              {notification.title}
+            </h1>
+            <h6 className="text-black/50 dark:text-white/50 font-poppins text-xs">
+              {timeCalc(notification.date)}
+            </h6>
           </div>
-          <p className="text-xs text-black/50 font-poppins">
+          <p className="text-xs text-black/50 dark:text-white/70 font-poppins">
             {notification.message}
           </p>
         </div>
