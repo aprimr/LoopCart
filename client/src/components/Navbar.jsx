@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
+import notificationColor from "../utils/notificationColor";
+import timeCalc from "../utils/timeCalc";
+
 import {
-  Menu,
   X,
   User,
   Package,
@@ -12,14 +14,154 @@ import {
   BadgePercent,
   SquareArrowOutUpRight,
   Settings,
+  ArrowUpRight,
+  Bell,
+  NotepadText,
+  CheckCheck,
+  Trash,
+  BellRing,
+  MessageCircle,
+  ClipboardCheck,
+  Truck,
+  MapPin,
+  Clock,
+  CreditCard,
+  Star,
+  ShieldOff,
+  RotateCw,
 } from "lucide-react";
+import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
+import { RiMenu3Line } from "react-icons/ri";
+
+import {} from "lucide-react";
 
 function Navbar() {
+  const [notifications, setNotifications] = useState([
+    {
+      id: 0,
+      title: "Welcome To LoopCart",
+      message:
+        "Thank you for joining us! Start shopping now and enjoy exclusive offers.",
+      icon: <Bell />,
+      date: "2025-05-02T11:50:00.000Z",
+      read: true,
+      category: "NEW_MESSAGE",
+    },
+    {
+      id: 1,
+      title: "Order Placed",
+      message: "Your order has been placed successfully.",
+      icon: <ClipboardCheck />,
+      date: "2025-05-02T12:00:00.000Z",
+      read: false,
+      category: "ORDER_PLACED",
+    },
+    {
+      id: 2,
+      title: "New Message",
+      message: "You have a new message.",
+      icon: <MessageCircle />,
+      date: "2025-05-02T12:10:00.000Z",
+      read: false,
+      category: "NEW_MESSAGE",
+    },
+    {
+      id: 3,
+      title: "Order Cancelled",
+      message: "Your order has been cancelled.",
+      icon: <Bell />,
+      date: "2025-05-02T12:20:00.000Z",
+      read: false,
+      category: "ORDER_CANCELLED",
+    },
+    {
+      id: 4,
+      title: "Order Dispatched",
+      message: "Your order has been dispatched and is on its way.",
+      icon: <Truck />,
+      date: "2025-05-02T12:30:00.000Z",
+      read: false,
+      category: "ORDER_DISPATCHED",
+    },
+    {
+      id: 5,
+      title: "Order Delivered",
+      message: "Your order has been successfully delivered.",
+      icon: <Package />,
+      date: "2025-05-02T12:40:00.000Z",
+      read: false,
+      category: "ORDER_DELIVERED",
+    },
+    {
+      id: 6,
+      title: "Order Out for Delivery",
+      message: "Your order is out for delivery.",
+      icon: <MapPin />,
+      date: "2025-05-02T12:50:00.000Z",
+      read: false,
+      category: "ORDER_OUT_FOR_DELIVERY",
+    },
+    {
+      id: 7,
+      title: "Flash Sale Alert",
+      message: "Hurry up! Flash sale is live now.",
+      icon: <Clock />,
+      date: "2025-05-02T13:00:00.000Z",
+      read: false,
+      category: "FLASH_SALE_ALERT",
+    },
+    {
+      id: 8,
+      title: "Product Review Reminder",
+      message: "It’s time to leave a review for your recent purchase.",
+      icon: <Star />,
+      date: "2025-05-02T13:10:00.000Z",
+      read: false,
+      category: "REVIEW_REMINDER",
+    },
+    {
+      id: 9,
+      title: "Profile Updated",
+      message: "Your profile has been updated successfully.",
+      icon: <User />,
+      date: "2025-05-02T13:20:00.000Z",
+      read: false,
+      category: "PROFILE_UPDATED",
+    },
+    {
+      id: 10,
+      title: "Order Refund Processed",
+      message: "Your order refund has been processed.",
+      icon: <CreditCard />,
+      date: "2025-05-02T13:30:00.000Z",
+      read: false,
+      category: "REFUND_PROCESSED",
+    },
+    {
+      id: 11,
+      title: "Account Suspended",
+      message: "Your account has been suspended due to suspicious activity.",
+      icon: <ShieldOff />,
+      date: "2025-05-02T13:40:00.000Z",
+      read: false,
+      category: "ACCOUNT_SUSPENDED",
+    },
+    {
+      id: 11,
+      title: "Account Suspended",
+      message: "Your account has been suspended due to suspicious activity.",
+      icon: <ShieldOff />,
+      date: "2025-05-02T13:40:00.000Z",
+      read: false,
+      category: "ACCOUNT_SUSPENDED",
+    },
+  ]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleNavigate = (path) => {
-    setDrawerOpen(false); // Close drawer when a menu item is clicked
+    setDrawerOpen(false);
     navigate(path);
   };
 
@@ -64,19 +206,37 @@ function Navbar() {
           </div>
 
           {/* Login Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="hidden sm:flex bg-blue-500 text-white font-medium py-[4px] px-5 rounded transition"
-          >
-            Login
-          </motion.button>
+          <div className="hidden sm:flex justify-center items-center gap-4">
+            <div className="hidden sm:flex gap-4">
+              <button
+                onClick={() => setNotificationOpen(true)}
+                className="relative"
+              >
+                <Bell className="w-6 h-6 text-blue-500" />
+                <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white bg-red-600 rounded-full"></div>
+              </button>
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.1, ease: "easeInOut" }}
+              className=" bg-blue-500 text-white font-medium py-[4px] px-5 rounded transition"
+            >
+              Login
+            </motion.button>
+          </div>
 
           {/* Hamburger for mobile */}
-          <div className="sm:hidden">
+          <div className="sm:hidden flex gap-4">
+            <button
+              onClick={() => setNotificationOpen(true)}
+              className="relative"
+            >
+              <Bell className="w-6 h-6 text-blue-500" />
+              <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white bg-red-600 rounded-full"></div>
+            </button>
             <button onClick={() => setDrawerOpen(true)}>
-              <Menu className="w-6 h-6 text-black" />
+              <RiMenu3Line className="w-6 h-6 text-black" />
             </button>
           </div>
         </div>
@@ -86,7 +246,7 @@ function Navbar() {
       <AnimatePresence>
         {drawerOpen && (
           <>
-            {/* Overlay with Glassmorphism */}
+            {/* Drawer Overlay Bg */}
             <motion.div
               key="overlay"
               initial={{ opacity: 0 }}
@@ -97,14 +257,14 @@ function Navbar() {
               onClick={() => setDrawerOpen(false)}
             />
 
-            {/* Drawer Panel with Glassmorphism */}
+            {/* Drawer Panel */}
             <motion.div
               key="drawer"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 w-64 h-full bg-white/20 backdrop-blur-lg border-l border-white/20 shadow-xl z-50 px-6 py-[18px] flex flex-col"
+              className="fixed top-0 right-0 w-64 h-full bg-white/20 backdrop-blur-lg border-l border-white/20 shadow-xl z-50 px-4 pt-[18px] pb-[6px] flex flex-col"
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-semibold text-black">Menu</h2>
@@ -144,15 +304,6 @@ function Navbar() {
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center gap-2"
-                  onClick={() => handleNavigate("/account")}
-                >
-                  <User className="w-5 h-5 text-black" />
-                  <span>My Account</span>
-                </motion.div>
-
-                <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2"
                   onClick={() => handleNavigate("/flash-sale")}
                 >
                   <BadgePercent className="w-5 h-5 text-black" />
@@ -171,32 +322,62 @@ function Navbar() {
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center gap-2"
+                  onClick={() => handleNavigate("/wishlist")}
+                >
+                  <NotepadText className="w-5 h-5 text-black" />
+                  <span>My Orders</span>
+                </motion.div>
+
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2"
+                  onClick={() => handleNavigate("/account")}
+                >
+                  <User className="w-5 h-5 text-black" />
+                  <span>My Account</span>
+                </motion.div>
+
+                <motion.div
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2"
                   onClick={() => handleNavigate("/settings")}
                 >
                   <Settings className="w-5 h-5 text-black" />
                   <span>Settings</span>
                 </motion.div>
 
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.1, ease: "easeInOut" }}
-                  className="flex items-center gap-2 bg-blue-500 text-white font-medium py-1 px-14 rounded"
-                  onClick={() => handleNavigate("/login")}
-                >
-                  Login
-                </motion.button>
+                <div className="flex flex-col gap-2">
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.1, ease: "easeInOut" }}
+                    className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white font-medium py-1  rounded"
+                    onClick={() => handleNavigate("/login")}
+                  >
+                    Login
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.1, ease: "easeInOut" }}
+                    className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 text-blue-500 bg-white/50 backdrop-blur-lg font-medium py-1  rounded"
+                    onClick={() => handleNavigate("/register")}
+                  >
+                    Register
+                  </motion.button>
+                </div>
               </div>
 
-              {/* Footer */}
-              <div className="mt-auto py-2 border-t border-b border-black/20">
-                <div className="flex flex-row flex-wrap gap-2 text-xs text-black">
+              {/* Drawer Footer */}
+              <div className="mt-auto py-2 border-t border-b border-black/20 font-poppins">
+                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black">
                   <a
                     href="#"
                     onClick={() => setDrawerOpen(false)}
                     className="hover:text-blue-500 underline"
                   >
                     Terms & Conditions
+                    <ArrowUpRight className="w-3 h-3 inline" />
                   </a>
                   <a
                     href="#"
@@ -204,15 +385,25 @@ function Navbar() {
                     className="hover:text-blue-500 underline"
                   >
                     Privacy Policy
+                    <ArrowUpRight className="w-3 h-3 inline" />
                   </a>
                 </div>
-                <div className="flex flex-row flex-wrap gap-2 text-xs text-black mt-2">
+                <div className="flex flex-row flex-wrap gap-2 text-[11px] text-black mt-2 font-poppins">
+                  <a
+                    href="#"
+                    onClick={() => setDrawerOpen(false)}
+                    className="hover:text-blue-500 underline"
+                  >
+                    FAQ
+                    <ArrowUpRight className="w-3 h-3 inline" />
+                  </a>
                   <a
                     href="#"
                     onClick={() => setDrawerOpen(false)}
                     className="hover:text-blue-500 underline"
                   >
                     Contact Us
+                    <ArrowUpRight className="w-3 h-3 inline" />
                   </a>
                   <a
                     href="#"
@@ -220,25 +411,133 @@ function Navbar() {
                     className="hover:text-blue-500 underline"
                   >
                     About Us
+                    <ArrowUpRight className="w-3 h-3 inline" />
                   </a>
                 </div>
               </div>
 
-              {/* View Source */}
-              <div
-                onClick={() => (window.location.href = "https://github.com")}
-                className="flex items-center gap-1 text-xs text-black pt-2"
-              >
-                <a
-                  href="https://github.com/loopcart/loopcart"
-                  className="hover:text-blue-500"
+              {/* Links */}
+              <div className="flex justify-between items-center pt-2">
+                {/* Source */}
+                <div
+                  onClick={() => (window.location.href = "https://github.com")}
+                  className="flex items-center gap-1 text-xs text-black font-poppins hover:text-blue-500"
                 >
-                  View Source
-                </a>
-                <SquareArrowOutUpRight className="w-3 h-3" />
+                  <a href="https://github.com/loopcart/loopcart">View Source</a>
+                  <SquareArrowOutUpRight className="w-3 h-3" />
+                </div>
+                {/* Social */}
+                <div className="flex items-center gap-2">
+                  <a
+                    href="#"
+                    className="hover:text-blue-500"
+                    onClick={() => setDrawerOpen(false)}
+                  >
+                    <FaXTwitter className="w-3 h-3" />
+                  </a>
+                  <a
+                    href="#"
+                    className="hover:text-blue-500"
+                    onClick={() => setDrawerOpen(false)}
+                  >
+                    <FaLinkedin className="w-3 h-3" />
+                  </a>
+                </div>
               </div>
             </motion.div>
           </>
+        )}
+        {notificationOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="absolute top-0 right-0 z-50 w-full max-w-[400px] h-screen bg-white border-l border-gray-300"
+          >
+            <div className="flex flex-col h-full">
+              {/* Header */}
+              <div className="shrink-0 h-16 flex items-center justify-between px-4 py-2 border-b border-gray-300">
+                <h1 className="text-lg font-poppins font-semibold">
+                  LoopCart <span className="text-blue-500">Bell </span>
+                  <BellRing className="text-blue-500 inline h-5 w-5" />
+                </h1>
+                <button onClick={() => setNotificationOpen(false)}>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Notification Content */}
+              <div className="flex flex-col flex-1 gap-2 p-4 overflow-y-auto">
+                {/* Actions */}
+                <div className="flex items-center justify-around border-b border-gray-300  font-rubik pb-4 gap-4">
+                  <div className="py-1 px-4 flex justify-center items-center gap-2 bg-black/85 hover:bg-black/70 text-white rounded text-sm font-medium cursor-pointer">
+                    <CheckCheck className="h-4 w-4" />
+                    <p>Mark As Read</p>
+                  </div>
+                  <div className="h-full w-[2px] bg-gray-200/95 rounded text-sm font-medium" />
+                  <div
+                    onClick={() => setNotifications([])}
+                    className="py-1 px-4 flex justify-center items-center gap-2 bg-rose-400 hover:bg-rose-500/85 text-white rounded text-sm font-medium cursor-pointer"
+                  >
+                    <Trash className="h-4 w-4" />
+                    <p>Delete All</p>
+                  </div>
+                </div>
+
+                {/* Notifications */}
+                {/* If no notification */}
+                {notifications.length === 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="flex flex-col items-center justify-center flex-1 gap-4 text-center"
+                  >
+                    <motion.div
+                      initial={{ rotate: -10 }}
+                      animate={{ rotate: [-10, 10, -10] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
+                      className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-50 shadow-inner"
+                    >
+                      <BellRing className="w-12 h-12 text-blue-500" />
+                    </motion.div>
+
+                    <motion.h1
+                      initial={{ y: 10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.2, duration: 0.4 }}
+                      className="text-xl font-semibold font-poppins text-gray-700"
+                    >
+                      You're all caught up!
+                    </motion.h1>
+
+                    <motion.p
+                      initial={{ y: 10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.4 }}
+                      className="text-sm text-gray-500 font-poppins max-w-xs"
+                    >
+                      No new notifications at the moment. Check back later for
+                      updates.
+                    </motion.p>
+                  </motion.div>
+                )}
+                {/* If has notification */}
+                {notifications.map((notification, idx) => (
+                  <Notification
+                    key={idx}
+                    notification={notification}
+                    setNotificationOpen={setNotificationOpen}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
@@ -246,3 +545,34 @@ function Navbar() {
 }
 
 export default Navbar;
+
+const Notification = ({ notification }) => {
+  const color = notificationColor(notification.category);
+  return (
+    <div className="flex items-center flex-row gap-2">
+      <div
+        className={`w-12 h-12 flex items-center justify-center rounded-full ${color.bg} ${color.text} relative`}
+      >
+        {notification.icon}
+
+        {/* Notification dot */}
+        {!notification.read && (
+          <div
+            className={`absolute top-0 right-1 h-3 w-3 bg-rose-500 border-2 border-white rounded-full`}
+          />
+        )}
+      </div>
+      <div className="flex flex-col flex-1">
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between">
+            <h1 className="text-sm font-medium">{notification.title}</h1>
+            <h6 className="text-xs">{timeCalc(notification.date)}</h6>
+          </div>
+          <p className="text-xs text-black/50 font-poppins">
+            {notification.message}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
