@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/public/Home";
 import Navbar from "../components/Navbar";
 import Settings from "../pages/private/Settings";
+import Footer from "../components/Footer";
 function AppRoutes() {
   return (
     <Router>
@@ -17,6 +18,7 @@ function AppRoutes() {
         {/* admin Routes */}
         <Route />
       </Routes>
+      <Footer />
     </Router>
   );
 }

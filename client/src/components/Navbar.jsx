@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -30,12 +30,18 @@ import {
   CreditCard,
   Star,
   ShieldOff,
-  RotateCw,
+  LogOut,
+  LayoutDashboard,
+  CircleUserRound,
 } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
 
 function Navbar() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const profileRef = useRef(null);
   const [notifications, setNotifications] = useState([
     {
       id: 0,
@@ -156,15 +162,38 @@ function Navbar() {
       category: "ACCOUNT_SUSPENDED",
     },
   ]);
-  // const [notifications, setNotifications] = useState([]);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const navigate = useNavigate();
 
+  // desktop menu
+  const menuItems = [
+    {
+      title: "Dashboard",
+      path: "/dashboard",
+      icon: <LayoutDashboard />,
+    },
+    { title: "Profile", path: "/profile", icon: <User /> },
+    {
+      title: "Settings",
+      path: "/settings",
+      icon: <Settings />,
+    },
+    { title: "Logout", path: "/logout", icon: <LogOut /> },
+  ];
+
+  const navigate = useNavigate();
   const handleNavigate = (path) => {
     setDrawerOpen(false);
     navigate(path);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -200,8 +229,11 @@ function Navbar() {
             </NavLink>
           </div>
 
-          {/* Login Button */}
-          <div className="hidden sm:flex justify-center items-center gap-4">
+          {/* Profile Btn for desktop */}
+          <div
+            className="hidden sm:flex justify-center items-center gap-4 relative"
+            ref={profileRef}
+          >
             <div className="hidden sm:flex gap-4">
               <button
                 onClick={() => setNotificationOpen(true)}
@@ -212,13 +244,50 @@ function Navbar() {
               </button>
             </div>
             <motion.button
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.1, ease: "easeInOut" }}
-              className=" bg-blue-500 text-white font-medium py-[4px] px-5 rounded transition"
+              transition={{ duration: 0.15, ease: "easeInOut" }}
+              onClick={() => setIsOpen(!isOpen)}
+              className="relative flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
             >
-              Login
+              <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
             </motion.button>
+
+            {isOpen && (
+              <ul className="absolute right-0 top-14 mt-2 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-md shadow-md w-48 py-2 z-50">
+                <NavLink
+                  to="/dashboard"
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <LayoutDashboard className="w-5 h-5" /> Dashboard
+                </NavLink>
+                <NavLink
+                  to="/my-account"
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <CircleUserRound className="w-5 h-5" /> My Account
+                </NavLink>
+                <NavLink
+                  to="/settings"
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Settings className="w-5 h-5" /> Settings
+                </NavLink>
+                <div className="border-t border-gray-300 dark:border-gray-600 my-2" />
+                <NavLink
+                  to="/login"
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <User className="w-5 h-5" /> Login
+                </NavLink>
+                <NavLink
+                  to="/logout"
+                  className="flex items-center gap-3 px-4 py-2 text-red-700 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <LogOut className="w-5 h-5" /> Logout
+                </NavLink>
+              </ul>
+            )}
           </div>
 
           {/* Hamburger for mobile */}
@@ -450,7 +519,7 @@ function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="absolute top-0 right-0 z-50 w-full max-w-[400px] h-screen bg-white dark:bg-black border-l border-gray-300 dark:border-gray-600"
+            className="fixed top-0 right-0 z-50 w-full max-w-[400px] h-screen sm:h-4/5 bg-white dark:bg-black border-l border-b border-gray-300 dark:border-gray-600"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
@@ -465,7 +534,10 @@ function Navbar() {
               </div>
 
               {/* Notification Content */}
-              <div className="flex flex-col flex-1 gap-4 p-4 overflow-y-auto">
+              <div
+                className="flex flex-col flex-1 gap-4 p-4 overflow-y-auto"
+                style={{ scrollbarWidth: "none" }}
+              >
                 {/* Actions */}
                 <div className="flex items-center justify-around border-b border-gray-300 dark:border-gray-600 font-rubik pb-4 gap-4">
                   <div className="py-1 px-4 flex justify-center items-center gap-2 bg-black/85 dark:bg-white/90 text-white dark:text-black rounded text-sm font-medium cursor-pointer">
