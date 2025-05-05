@@ -33,6 +33,7 @@ import {
   LogOut,
   LayoutDashboard,
   CircleUserRound,
+  ShoppingCart,
 } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
@@ -197,7 +198,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="w-full h-16 bg-white dark:bg-black border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
+      <nav className="w-full h-16 bg-white dark:bg-black/90 border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
         <div className="max-w-screen-xl mx-auto h-full px-4 flex items-center justify-between">
           {/* Logo */}
           <NavLink
@@ -242,6 +243,9 @@ function Navbar() {
                 <Bell className="w-6 h-6 text-blue-500" />
                 <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-500 rounded-full"></div>
               </button>
+              <NavLink to="/cart">
+                <ShoppingCart className="w-6 h-6 text-blue-500" />
+              </NavLink>
             </div>
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -299,6 +303,9 @@ function Navbar() {
               <Bell className="w-6 h-6 text-blue-500" />
               <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-600 rounded-full"></div>
             </button>
+            <NavLink to="/cart">
+              <ShoppingCart className="w-6 h-6 text-blue-500" />
+            </NavLink>
             <button onClick={() => setDrawerOpen(true)}>
               <RiMenu3Line className="w-6 h-6 text-black dark:text-white" />
             </button>

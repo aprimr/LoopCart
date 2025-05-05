@@ -10,6 +10,9 @@ export default {
         rubik: ["Rubik", "sans-serif"],
         pacifico: ["Pacifico", "sans-serif"],
       },
+      colors: {
+        softBlueGray: "rgb(230, 233, 242)",
+      },
     },
   },
 
