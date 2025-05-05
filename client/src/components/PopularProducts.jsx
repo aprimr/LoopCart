@@ -90,7 +90,7 @@ const PopularProducts = () => {
       hasFreeDelivery: true,
     },
     {
-      id: 1,
+      id: 11,
       name: "PlayStation 5 Console",
       description: "Next-gen Sony gaming console",
       category: "Gaming",
@@ -103,7 +103,7 @@ const PopularProducts = () => {
       hasFreeDelivery: true,
     },
     {
-      id: 2,
+      id: 12,
       name: "Nintendo Switch",
       description: "Portable gaming console",
       category: "Gaming",
@@ -118,7 +118,7 @@ const PopularProducts = () => {
 
     // 2. Computers
     {
-      id: 3,
+      id: 13,
       name: "MacBook Pro 16”",
       description: "Apple’s high-performance laptop",
       category: "Computers",
@@ -131,7 +131,7 @@ const PopularProducts = () => {
       hasFreeDelivery: true,
     },
     {
-      id: 4,
+      id: 14,
       name: "Dell XPS 13",
       description: "Compact and powerful laptop",
       category: "Computers",
@@ -146,7 +146,7 @@ const PopularProducts = () => {
 
     // 3. Mobile
     {
-      id: 5,
+      id: 15,
       name: "Samsung Galaxy S22",
       description: "Latest Samsung flagship smartphone",
       category: "Mobile",
@@ -159,7 +159,7 @@ const PopularProducts = () => {
       hasFreeDelivery: false,
     },
     {
-      id: 6,
+      id: 16,
       name: "iPhone 14 Pro",
       description: "Apple's latest smartphone",
       category: "Mobile",

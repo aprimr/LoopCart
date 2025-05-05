@@ -77,7 +77,7 @@ const ProductCard = ({ data, className }) => {
             <span className="font-medium font-rubik">Best Selling</span>
           </div>
         </div>
-        <h3 className="text-base font-semibold font-rubik text-gray-800 dark:text-white truncate">
+        <h3 className="text-base font-medium font-rubik text-gray-800 dark:text-white truncate">
           {name}
         </h3>
 
@@ -98,7 +98,7 @@ const ProductCard = ({ data, className }) => {
           </span>
         </div>
         {/* Price & Discount percent */}
-        <p className="text-blue-600 dark:text-blue-400 flex items-center justify-between font-bold font-rubik">
+        <div className="text-blue-600 dark:text-blue-400 flex items-center justify-between font-bold font-rubik">
           <div className="text-sm">
             रु{" "}
             <span className="text-lg">
@@ -110,7 +110,7 @@ const ProductCard = ({ data, className }) => {
               -{discount}%
             </span>
           )}
-        </p>
+        </div>
       </NavLink>
     </div>
   );

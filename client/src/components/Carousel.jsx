@@ -30,7 +30,7 @@ const Carousel = () => {
 
   return (
     <section className="w-full bg-white dark:bg-black py-6">
-      <div className="max-w-screen-xl mx-auto px-4">
+      <div className="max-w-screen-xl mx-auto px-2">
         {slides.length === 0 ? (
           // Skeleton Loader when slides are empty
           <div className="animate-pulse space-y-4 px-1">
