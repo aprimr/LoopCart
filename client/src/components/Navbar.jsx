@@ -33,6 +33,9 @@ import {
   LogOut,
   LayoutDashboard,
   CircleUserRound,
+  ShoppingCart,
+  Search,
+  SearchX,
 } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
@@ -40,6 +43,7 @@ import { RiMenu3Line } from "react-icons/ri";
 function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const profileRef = useRef(null);
   const [notifications, setNotifications] = useState([
@@ -163,6 +167,12 @@ function Navbar() {
     },
   ]);
 
+  const navigate = useNavigate();
+  const handleNavigate = (path) => {
+    setDrawerOpen(false);
+    navigate(path);
+  };
+
   // desktop menu
   const menuItems = [
     {
@@ -179,10 +189,9 @@ function Navbar() {
     { title: "Logout", path: "/logout", icon: <LogOut /> },
   ];
 
-  const navigate = useNavigate();
-  const handleNavigate = (path) => {
-    setDrawerOpen(false);
-    navigate(path);
+  const handleSearch = () => {
+    // navigate to explore page with search query
+    console.log("search");
   };
 
   useEffect(() => {
@@ -197,7 +206,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="w-full h-16 bg-white dark:bg-black border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
+      <nav className="w-full h-16 bg-white/90 dark:bg-black/90 border-b border-gray-300 dark:border-gray-600 backdrop-blur-xl  bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
         <div className="max-w-screen-xl mx-auto h-full px-4 flex items-center justify-between">
           {/* Logo */}
           <NavLink
@@ -235,6 +244,13 @@ function Navbar() {
             ref={profileRef}
           >
             <div className="hidden sm:flex gap-4">
+              <button onClick={() => setSearchOpen(!searchOpen)}>
+                {searchOpen ? (
+                  <SearchX className="w-6 h-6 text-blue-500" />
+                ) : (
+                  <Search className="w-6 h-6 text-blue-500" />
+                )}
+              </button>
               <button
                 onClick={() => setNotificationOpen(true)}
                 className="relative"
@@ -242,6 +258,9 @@ function Navbar() {
                 <Bell className="w-6 h-6 text-blue-500" />
                 <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-500 rounded-full"></div>
               </button>
+              <NavLink to="/cart">
+                <ShoppingCart className="w-6 h-6 text-blue-500" />
+              </NavLink>
             </div>
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -292,6 +311,13 @@ function Navbar() {
 
           {/* Hamburger for mobile */}
           <div className="sm:hidden flex gap-4">
+            <button onClick={() => setSearchOpen(!searchOpen)}>
+              {searchOpen ? (
+                <SearchX className="w-6 h-6 text-blue-500" />
+              ) : (
+                <Search className="w-6 h-6 text-blue-500" />
+              )}
+            </button>
             <button
               onClick={() => setNotificationOpen(true)}
               className="relative"
@@ -299,6 +325,9 @@ function Navbar() {
               <Bell className="w-6 h-6 text-blue-500" />
               <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-600 rounded-full"></div>
             </button>
+            <NavLink to="/cart">
+              <ShoppingCart className="w-6 h-6 text-blue-500" />
+            </NavLink>
             <button onClick={() => setDrawerOpen(true)}>
               <RiMenu3Line className="w-6 h-6 text-black dark:text-white" />
             </button>
@@ -609,6 +638,25 @@ function Navbar() {
               </div>
             </div>
           </motion.div>
+        )}
+        {searchOpen && (
+          <div
+            onClick={() => setSearchOpen(false)}
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-20 left-1/2 flex justify-center items-center transform -translate-x-1/2 w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 px-4 py-3 bg-white/80 dark:bg-gray-800/80 rounded shadow-lg z-50"
+            >
+              <input
+                type="text"
+                placeholder="Search"
+                className="w-full bg-transparent outline-none border-none text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base font-poppins"
+              />
+
+              <Search onClick={handleSearch} className="text-blue-500 " />
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </>

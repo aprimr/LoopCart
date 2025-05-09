@@ -29,7 +29,7 @@ function Footer() {
             <ArrowUpRight className="h-3 w-3 inline" />
           </NavLink>
         </div>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-3 ">
           <a
             href="#"
             className="flex gap-1 items-center underline hover:text-gray-400"
@@ -37,7 +37,7 @@ function Footer() {
             View Source
             <SquareArrowOutUpRight className="h-3 w-3 inline" />
           </a>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <a
               href="#"
               className="flex gap-1 items-center underline hover:text-gray-400"

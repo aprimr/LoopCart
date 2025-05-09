@@ -5,17 +5,23 @@ import Home from "../pages/public/Home";
 import Navbar from "../components/Navbar";
 import Settings from "../pages/private/Settings";
 import Footer from "../components/Footer";
+import Login from "../pages/public/Login";
+import Explore from "../pages/public/Explore";
+import Loading from "../components/Loading";
+
 function AppRoutes() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Home />} />
-        {/* Private Routes */}
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/login" element={<Login />} />
 
-        {/* admin Routes */}
+        <Route path="/explore" element={<Explore />} />
+
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/extra" element={<Loading />} />
+
         <Route />
       </Routes>
       <Footer />
