@@ -33,6 +33,9 @@ import {
   LogOut,
   LayoutDashboard,
   CircleUserRound,
+  Search,
+  SearchX,
+  ShoppingCart,
 } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
