@@ -3,8 +3,7 @@ import React from "react";
 // Define the CoverBanner component with a local image
 const CoverBanner = ({ imageUrl }) => {
   return (
-    <section className="w-full relative">
-      {/* Image element with auto height based on aspect ratio */}
+    <section className="w-full relative select-none">
       <img
         src={imageUrl}
         alt="Cover Banner"

@@ -206,7 +206,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="w-full h-16 bg-white dark:bg-black border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50">
+      <nav className="w-full h-16 bg-white/90 dark:bg-black border-b border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins fixed top-0 left-0 z-50 select-none">
         <div className="max-w-screen-xl mx-auto h-full px-4 flex items-center justify-between">
           {/* Logo */}
           <NavLink
@@ -334,6 +334,9 @@ function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Spacer */}
+      <div className="h-16" />
 
       {/* Mobile Drawer */}
       <AnimatePresence>

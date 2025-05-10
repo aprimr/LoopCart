@@ -70,7 +70,7 @@ const TopDiscounts = () => {
   }, []);
 
   return (
-    <section className="w-full bg-white dark:bg-black py-8">
+    <section className="w-full bg-white dark:bg-black py-8 select-none">
       <div className="max-w-screen-xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 px-2 dark:text-white mb-4 font-poppins">
           Top Discounts

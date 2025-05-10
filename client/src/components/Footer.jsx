@@ -5,7 +5,7 @@ import { FaXTwitter, FaLinkedin, FaL } from "react-icons/fa6";
 
 function Footer() {
   return (
-    <footer className="hidden sm:flex w-full h-10 text-black dark:text-white bg-white dark:bg-black border-t border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins">
+    <footer className="hidden sm:flex w-full h-10 text-black dark:text-white bg-white dark:bg-black border-t border-gray-300 dark:border-gray-600 backdrop-blur-lg bg-opacity-60 font-poppins select-none">
       <div className="max-w-screen-xl w-full mx-auto h-full px-4 flex items-center justify-between text-[11px]">
         <div className="flex gap-4">
           <NavLink to="/terms" className="underline hover:text-gray-400">

@@ -7,7 +7,7 @@ const dummyProducts = [
     id: 1,
     name: "Wireless Headphones",
     description: "High-quality over-ear noise cancelling headphones.",
-    price: 129,
+    price: 1290,
     discount: 10,
     rating: 4.6,
     sold: 230,
@@ -19,7 +19,7 @@ const dummyProducts = [
     id: 2,
     name: "Smartphone Pro Max",
     description: "Latest flagship with AMOLED display and 5G.",
-    price: 999,
+    price: 29990,
     discount: 15,
     rating: 4.8,
     sold: 514,
@@ -31,7 +31,7 @@ const dummyProducts = [
     id: 3,
     name: "Laptop Stand",
     description: "Adjustable aluminum stand for laptops up to 17 inches.",
-    price: 40,
+    price: 450,
     discount: 5,
     rating: 4.4,
     sold: 142,
@@ -43,7 +43,7 @@ const dummyProducts = [
     id: 4,
     name: "Bluetooth Speaker",
     description: "Portable speaker with rich bass and long battery life.",
-    price: 79,
+    price: 3279,
     discount: 20,
     rating: 4.7,
     sold: 311,
@@ -55,8 +55,8 @@ const dummyProducts = [
     id: 5,
     name: "USB-C Charger 65W",
     description: "Fast charging adapter for phones and laptops.",
-    price: 25,
-    discount: 0,
+    price: 1025,
+    discount: "",
     rating: 4.2,
     sold: 98,
     image: "/images/charger.png",
@@ -84,8 +84,6 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-black px-4 py-8 font-poppins">
       <div className="max-w-screen-xl mx-auto">
-        <div className="pt-16" />
-
         {/* Controls Section */}
         <div className="flex justify-between items-center mb-6 gap-4 flex-row sm:flex-nowrap font-poppins">
           {/* Filter Buttons */}

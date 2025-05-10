@@ -8,6 +8,8 @@ import Footer from "../components/Footer";
 import Login from "../pages/public/Login";
 import Explore from "../pages/public/Explore";
 import Loading from "../components/Loading";
+import Wishlist from "../pages/public/WishList";
+import Signup from "../pages/public/Signup";
 
 function AppRoutes() {
   return (
@@ -16,8 +18,10 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         <Route path="/explore" element={<Explore />} />
+        <Route path="/wishlist" element={<Wishlist />} />
 
         <Route path="/settings" element={<Settings />} />
         <Route path="/extra" element={<Loading />} />

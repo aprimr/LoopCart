@@ -36,12 +36,12 @@ const categories = [
 
 function Categories() {
   return (
-    <section className="w-full py-4 px-2 bg-white dark:bg-black transition-colors">
+    <section className="w-full py-4 px-2 bg-white dark:bg-black transition-colors select-none">
       <div className="max-w-screen-xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4 font-poppins">
           Shop by Category
         </h2>
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-4 w-full justify-between overflow-x-auto scrollbar-hide">
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (

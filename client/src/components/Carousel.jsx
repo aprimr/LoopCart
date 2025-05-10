@@ -29,7 +29,7 @@ const Carousel = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="w-full bg-white dark:bg-black py-6">
+    <section className="w-full bg-white dark:bg-black py-6 select-none">
       <div className="max-w-screen-xl mx-auto px-2">
         {slides.length === 0 ? (
           // Skeleton Loader when slides are empty

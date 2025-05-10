@@ -12,7 +12,6 @@ import Cover1 from "../../assets/images/Cover1.jpg";
 function Home() {
   return (
     <div className="min-h-screen h-full w-full px-2 bg-white dark:bg-black">
-      <div className="pt-16" /> {/* Spacer */}
       <div className="max-w-screen-xl mx-auto w-full">
         <Carousel />
         <Categories />
