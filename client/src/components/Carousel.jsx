@@ -26,12 +26,13 @@ const Carousel = () => {
       detailsPath: "/products/macbook-pro",
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   return (
     <section className="w-full bg-white dark:bg-black py-6 select-none">
       <div className="max-w-screen-xl mx-auto px-2">
-        {slides.length === 0 ? (
+        {isLoading ? (
           // Skeleton Loader when slides are empty
           <div className="animate-pulse space-y-4 px-1">
             <div className="h-[320px] sm:h-[360px] md:h-[340px] lg:h-[320px] bg-gray-200 dark:bg-gray-800" />

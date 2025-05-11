@@ -16,9 +16,9 @@ function Home() {
         <Carousel />
         <Categories />
         <FeaturedProducts />
-        <CoverBanner imageUrl={Cover1} />
+        <CoverBanner imageUrl={Cover1} isLoading={false} />
         <PopularProducts />
-        <CoverBanner imageUrl={Cover1} />
+        <CoverBanner imageUrl={Cover1} isLoading={false} />
         <TopDiscounts />
         <NewsLetter />
       </div>
