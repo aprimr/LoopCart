@@ -431,7 +431,7 @@ function Navbar() {
                   className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/account")}
                 >
-                  <User className="w-5 h-5" />
+                  <CircleUserRound className="w-5 h-5" />
                   <span>My Account</span>
                 </motion.div>
 
@@ -444,24 +444,22 @@ function Navbar() {
                   <span>Settings</span>
                 </motion.div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col  gap-2 border-t bg-transparent pt-2 border-black/20 dark:border-white/20">
                   <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white font-medium py-1  rounded"
+                    whileTap={{ scale: 0.95 }}
+                    className="text-black dark:text-white flex items-center gap-2"
                     onClick={() => handleNavigate("/login")}
                   >
-                    Login
+                    <User className="w-5 h-5" />
+                    <span className="">Login</span>
                   </motion.button>
                   <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 text-blue-500 bg-white/50 dark:bg-black dark:text-white backdrop-blur-lg font-medium py-1  rounded"
-                    onClick={() => handleNavigate("/register")}
+                    whileTap={{ scale: 0.95 }}
+                    className="text-red-700 dark:text-red-400 flex items-center gap-2"
+                    onClick={() => handleNavigate("/logout")}
                   >
-                    Register
+                    <LogOut className="w-5 h-5" />
+                    <span className="">Logout</span>
                   </motion.button>
                 </div>
               </div>

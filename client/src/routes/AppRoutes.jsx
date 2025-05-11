@@ -5,11 +5,12 @@ import Home from "../pages/public/Home";
 import Navbar from "../components/Navbar";
 import Settings from "../pages/private/Settings";
 import Footer from "../components/Footer";
-import Login from "../pages/public/Login";
+import Login from "../pages/public/auth/Login";
 import Explore from "../pages/public/Explore";
 import Loading from "../components/Loading";
 import Wishlist from "../pages/public/WishList";
-import Signup from "../pages/public/Signup";
+import Signup from "../pages/public/auth/Signup";
+import VerifyOtp from "../pages/public/auth/VerifyOtp";
 
 function AppRoutes() {
   return (
@@ -19,6 +20,8 @@ function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        <Route path="/signup/verify/u/:signToken" element={<VerifyOtp />} />
 
         <Route path="/explore" element={<Explore />} />
         <Route path="/wishlist" element={<Wishlist />} />

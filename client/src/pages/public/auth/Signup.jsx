@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { isEmail } from "../../utils/isEmail";
-import { imgToBase64 } from "../../utils/imgToBase64";
+import { NavLink, useNavigate } from "react-router-dom";
+import { isEmail } from "../../../utils/isEmail";
+import { imgToBase64 } from "../../../utils/imgToBase64";
 import { toast } from "sonner";
 import { Image, LoaderCircle, Trash2 } from "lucide-react";
 
@@ -12,6 +12,8 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profilePicBase64, setProfilePicBase64] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -34,20 +36,8 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    // Simulate async call
-    setTimeout(() => {
-      console.log("Signup Data:", {
-        fullName,
-        email,
-        password,
-        profilePicBase64,
-      });
-
-      setIsLoading(false);
-      toast.success("Signup successful");
-    }, 1500);
+    navigate("/signup/verify/u/");
   };
-
   const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];
     if (file) {

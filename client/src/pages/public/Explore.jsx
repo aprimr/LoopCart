@@ -84,6 +84,9 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-black px-4 py-8 font-poppins">
       <div className="max-w-screen-xl mx-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 font-poppins">
+          Explore Products
+        </h2>
         {/* Controls Section */}
         <div className="flex justify-between items-center mb-6 gap-4 flex-row sm:flex-nowrap font-poppins">
           {/* Filter Buttons */}
