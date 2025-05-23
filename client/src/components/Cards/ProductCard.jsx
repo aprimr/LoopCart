@@ -106,7 +106,7 @@ const ProductCard = ({ data, className }) => {
             </span>{" "}
           </div>
           {discount && (
-            <span className="ml-2 px-1.5 py-0.5 rounded bg-rose-100/80 dark:bg-rose-400/20 text-xs text-rose-500 dark:text-rose-500 font-normal font-poppins">
+            <span className="ml-2 px-1.5 py-0.5 rounded bg-rose-100/80 dark:bg-rose-600/80 text-xs text-rose-500 dark:text-white font-normal font-poppins">
               -{discount}%
             </span>
           )}

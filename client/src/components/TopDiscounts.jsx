@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProductCard from "./Cards/ProductCard";
 import ProductCardSkeleton from "./Skeletons/ProductCardSkeleton";
 

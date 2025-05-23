@@ -61,7 +61,7 @@ const signup = async (req, res) => {
       userData.profilePic = profilePic;
     }
     // save user
-    const user = new User();
+    const user = new User(userData);
     await user.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {

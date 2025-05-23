@@ -10,7 +10,7 @@ const Loading = () => {
         </div>
       </div>
 
-      <footer className="absolute bottom-20 text-center text-lg sm:text-xl">
+      <footer className="absolute bottom-[100px] text-center text-lg sm:text-xl">
         <p className="font-semibold text-black dark:text-white">
           Loop
           <span className="text-blue-500">Cart</span>

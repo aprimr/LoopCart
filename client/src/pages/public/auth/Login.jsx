@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner";
-import { LoaderCircle } from "lucide-react";
+import { Eye, EyeClosed, EyeOff, LoaderCircle } from "lucide-react";
 import axios from "../../../services/axios";
 
 const Login = ({ message }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -60,7 +61,7 @@ const Login = ({ message }) => {
             />
           </div>
 
-          {/* Password */}
+          {/* password */}
           <div>
             <label
               htmlFor="password"
@@ -68,17 +69,28 @@ const Login = ({ message }) => {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              className={`w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/40 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                className={`w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/40 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           {/* Forgot Password */}

@@ -11,7 +11,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [profilePicBase64, setProfilePicBase64] = useState(null);
+  const [profilePicBase64, setProfilePicBase64] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
