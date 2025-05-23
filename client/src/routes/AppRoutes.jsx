@@ -8,9 +8,9 @@ import Footer from "../components/Footer";
 import Login from "../pages/public/auth/Login";
 import Explore from "../pages/public/Explore";
 import Loading from "../components/Loading";
-import Wishlist from "../pages/public/WishList";
 import Signup from "../pages/public/auth/Signup";
 import VerifyOtp from "../pages/public/auth/VerifyOtp";
+import Account from "../pages/private/Account";
 
 function AppRoutes() {
   return (
@@ -24,8 +24,8 @@ function AppRoutes() {
         <Route path="/signup/verify/u/:signToken" element={<VerifyOtp />} />
 
         <Route path="/explore" element={<Explore />} />
-        <Route path="/wishlist" element={<Wishlist />} />
 
+        <Route path="/account" element={<Account />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/extra" element={<Loading />} />
 

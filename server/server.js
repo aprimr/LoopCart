@@ -1,6 +1,7 @@
 import "./src/config/dotenv.js";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import db from "./src/config/db.js";
 import authRouter from "./src/routes/auth.routes.js";
 
@@ -15,6 +16,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 
 //routes

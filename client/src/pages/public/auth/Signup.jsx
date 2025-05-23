@@ -66,7 +66,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-white via-gray-100 to-blue-100 dark:from-black dark:via-gray-900 dark:to-gray-800 flex items-center justify-center px-4 font-poppins select-none">
+    <div className="min-h-[100svh] w-full bg-gradient-to-br from-white via-gray-100 to-blue-100 dark:from-black dark:via-gray-900 dark:to-gray-800 flex items-center justify-center px-4 font-poppins select-none">
       <div className="w-full max-w-md p-4 sm:p-6 rounded-xl bg-transparent text-left text-gray-900 dark:text-white">
         <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
           Sign Up
