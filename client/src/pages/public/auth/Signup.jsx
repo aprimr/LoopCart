@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "../../../services/axios";
 import { isEmail } from "../../../utils/isEmail";
 import { imgToBase64 } from "../../../utils/imgToBase64";
 import { toast } from "sonner";
@@ -34,9 +35,23 @@ const Signup = () => {
       return toast.error("Please enter a valid email address");
     }
 
-    setIsLoading(true);
-
-    navigate("/signup/verify/u/");
+    try {
+      setIsLoading(true);
+      const res = await axios.post("/auth/signup", {
+        fullName,
+        email,
+        password,
+        profilePic: profilePicBase64,
+      });
+      if (res.status === 201) {
+        toast.success("Signup successful");
+        setIsLoading(false);
+        navigate("/login");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message);
+      setIsLoading(false);
+    }
   };
   const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];

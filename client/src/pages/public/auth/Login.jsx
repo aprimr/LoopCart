@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import axios from "../../../services/axios";
 
 const Login = ({ message }) => {
   const [email, setEmail] = useState("");
@@ -15,13 +16,18 @@ const Login = ({ message }) => {
       return toast.error("Please fill all the fields");
     }
 
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
+      const res = await axios.post("/auth/login", { email, password });
 
-    // Simulate async login
-    setTimeout(() => {
-      console.log("Login Form Submit", { email, password });
+      if (res.status === 200) {
+        toast.success("Login successful");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message);
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
