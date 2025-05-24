@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "sonner";
-import { Eye, EyeClosed, EyeOff, LoaderCircle } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import axios from "../../../services/axios";
+import useUserState from "../../../store/userStore";
 
 const Login = ({ message }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { login } = useUserState();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,6 +25,7 @@ const Login = ({ message }) => {
       const res = await axios.post("/auth/login", { email, password });
 
       if (res.status === 200) {
+        login(res.data.user);
         toast.success("Login successful");
         setIsLoading(false);
       }

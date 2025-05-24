@@ -30,13 +30,23 @@ const login = async (req, res) => {
     // set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // use true if you're on HTTPS (e.g. production)
-      sameSite: "lax", // 'lax' is best for dev, allows cross-origin top-level GETs
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     // send response
-    res.status(200).json({ message: "Login successful" });
+    const userData = {
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      profilePic: user.profilePic,
+      isVerified: user.isVerified,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+    };
+    res.status(200).json({ message: "Login successful", user: userData });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -84,4 +94,13 @@ const getUser = async (req, res) => {
   }
 };
 
-export { login, signup, getUser };
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { login, signup, getUser, logout };

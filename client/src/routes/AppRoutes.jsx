@@ -11,6 +11,7 @@ import Loading from "../components/Loading";
 import Signup from "../pages/public/auth/Signup";
 import VerifyOtp from "../pages/public/auth/VerifyOtp";
 import Account from "../pages/private/Account";
+import Logout from "../pages/private/Logout";
 
 function AppRoutes() {
   return (
@@ -25,8 +26,10 @@ function AppRoutes() {
 
         <Route path="/explore" element={<Explore />} />
 
-        <Route path="/account" element={<Account />} />
         <Route path="/settings" element={<Settings />} />
+
+        <Route path="/logout" element={<Logout />} />
+
         <Route path="/extra" element={<Loading />} />
 
         <Route />
