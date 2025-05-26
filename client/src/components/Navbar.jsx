@@ -40,6 +40,8 @@ import {
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiMenu3Line } from "react-icons/ri";
 
+import useUserStore from "../store/userStore";
+
 function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -167,6 +169,8 @@ function Navbar() {
     },
   ]);
 
+  const { user } = useUserStore((state) => state);
+
   const navigate = useNavigate();
   const handleNavigate = (path) => {
     setDrawerOpen(false);
@@ -238,12 +242,13 @@ function Navbar() {
             </NavLink>
           </div>
 
-          {/* Profile Btn for desktop */}
+          {/* buttons in desktop */}
           <div
             className="hidden sm:flex justify-center items-center gap-4 relative"
             ref={profileRef}
           >
             <div className="hidden sm:flex gap-4">
+              {/* search button */}
               <button onClick={() => setSearchOpen(!searchOpen)}>
                 {searchOpen ? (
                   <SearchX className="w-6 h-6 text-blue-500" />
@@ -251,6 +256,7 @@ function Navbar() {
                   <Search className="w-6 h-6 text-blue-500" />
                 )}
               </button>
+              {/* Notification */}
               <button
                 onClick={() => setNotificationOpen(true)}
                 className="relative"
@@ -258,53 +264,81 @@ function Navbar() {
                 <Bell className="w-6 h-6 text-blue-500" />
                 <div className="absolute top-0 right-1 h-2 w-2 border-2 border-white dark:border-black bg-red-500 rounded-full"></div>
               </button>
+              {/* Cart */}
               <NavLink to="/cart">
                 <ShoppingCart className="w-6 h-6 text-blue-500" />
               </NavLink>
             </div>
+            {/* Profile btn */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.15, ease: "easeInOut" }}
               onClick={() => setIsOpen(!isOpen)}
-              className="relative flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
+              className="relative flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-900 border-2 border-blue-500 dark:border-blue-500 shadow-sm hover:shadow-md transition-all"
             >
-              <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              {!user ? (
+                <User className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              ) : (
+                <img
+                  src={user.profilePic}
+                  alt="userpic"
+                  className="w-full h-full object-contain rounded-full text-gray-700 dark:text-gray-200"
+                />
+              )}
             </motion.button>
 
             {isOpen && (
               <ul className="absolute right-0 top-14 mt-2 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-md shadow-md w-48 py-2 z-50">
+                {user?.role === "admin" && (
+                  <NavLink
+                    to="/admin/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200"
+                  >
+                    <LayoutDashboard className="w-5 h-5" /> Dashboard
+                  </NavLink>
+                )}
                 <NavLink
-                  to="/dashboard"
-                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  to="/my-orders"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200"
                 >
-                  <LayoutDashboard className="w-5 h-5" /> Dashboard
+                  <NotepadText className="w-5 h-5" /> My Orders
                 </NavLink>
                 <NavLink
                   to="/account"
-                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200"
                 >
                   <CircleUserRound className="w-5 h-5" /> My Account
                 </NavLink>
                 <NavLink
                   to="/settings"
-                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 "
                 >
                   <Settings className="w-5 h-5" /> Settings
                 </NavLink>
                 <div className="border-t border-gray-300 dark:border-gray-600 my-2" />
-                <NavLink
-                  to="/login"
-                  className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <User className="w-5 h-5" /> Login
-                </NavLink>
-                <NavLink
-                  to="/logout"
-                  className="flex items-center gap-3 px-4 py-2 text-red-700 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <LogOut className="w-5 h-5" /> Logout
-                </NavLink>
+                {!user && (
+                  <NavLink
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-blue-500 dark:text-blue-500"
+                  >
+                    <User className="w-5 h-5" /> Login
+                  </NavLink>
+                )}
+                {user && (
+                  <NavLink
+                    to="/logout"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-red-700 dark:text-red-400"
+                  >
+                    <LogOut className="w-5 h-5" /> Logout
+                  </NavLink>
+                )}
               </ul>
             )}
           </div>
@@ -420,18 +454,29 @@ function Navbar() {
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   className="text-black dark:text-white flex items-center gap-2"
-                  onClick={() => handleNavigate("/wishlist")}
+                  onClick={() => handleNavigate("/my-orders")}
                 >
                   <NotepadText className="w-5 h-5" />
                   <span>My Orders</span>
                 </motion.div>
+
+                {user?.role === "admin" && (
+                  <motion.div
+                    whileTap={{ scale: 0.95 }}
+                    className="text-black dark:text-white flex items-center gap-2"
+                    onClick={() => handleNavigate("/admin/dashboard")}
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    <span>Dashboard</span>
+                  </motion.div>
+                )}
 
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   className="text-black dark:text-white flex items-center gap-2"
                   onClick={() => handleNavigate("/account")}
                 >
-                  <CircleUserRound className="w-5 h-5" />
+                  <User className="w-5 h-5" />
                   <span>My Account</span>
                 </motion.div>
 
@@ -445,22 +490,26 @@ function Navbar() {
                 </motion.div>
 
                 <div className="flex flex-col  gap-2 border-t bg-transparent pt-2 border-black/20 dark:border-white/20">
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="text-black dark:text-white flex items-center gap-2"
-                    onClick={() => handleNavigate("/login")}
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="">Login</span>
-                  </motion.button>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className="text-red-700 dark:text-red-400 flex items-center gap-2"
-                    onClick={() => handleNavigate("/logout")}
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span className="">Logout</span>
-                  </motion.button>
+                  {!user && (
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className="text-blue-500 flex items-center gap-2"
+                      onClick={() => handleNavigate("/login")}
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="">Login</span>
+                    </motion.button>
+                  )}
+                  {user && (
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className="text-red-700 dark:text-red-500 flex items-center gap-2"
+                      onClick={() => handleNavigate("/logout")}
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span className="">Logout</span>
+                    </motion.button>
+                  )}
                 </div>
               </div>
 

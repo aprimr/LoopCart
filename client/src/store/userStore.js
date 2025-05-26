@@ -10,7 +10,10 @@ const useUserState = create(
 
         login: (userData) => set({ user: userData, isLogined: true }),
 
-        logout: () => set({ user: null, isLogined: false }),
+        logout: () => {
+          set({ user: null, isLogined: false }),
+            localStorage.removeItem("user");
+        },
 
         updateUser: (newData) =>
           set((state) => ({
@@ -18,7 +21,7 @@ const useUserState = create(
           })),
       }),
       {
-        name: "user-storage", // localStorage key
+        name: "user", // localStorage key
       }
     ),
     {
