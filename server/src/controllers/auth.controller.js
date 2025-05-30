@@ -30,8 +30,8 @@ const login = async (req, res) => {
     // set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // Only set secure in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Using lax locally
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
