@@ -20,6 +20,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import useUserStore from "./store/userStore";
 import Layout from "./Layout/Layout";
 import AdminLayout from "./Layout/AdminLayout";
+import UsersManagement from "./pages/admin/UsersManagement";
 
 function App() {
   const { isLogined, user } = useUserStore((state) => state);
@@ -87,6 +88,7 @@ function App() {
             }
           >
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<UsersManagement />} />
           </Route>
           {/* 404 */}
           <Route path="*" element={<NotFound />} />

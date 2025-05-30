@@ -55,6 +55,10 @@ const Signup = () => {
   };
   const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];
+    // limit file size to 5 mb
+    if (file && file.size > 2 * 1024 * 1024) {
+      return toast.error("File size must be less than 2MB");
+    }
     if (file) {
       try {
         const base64Data = await imgToBase64(file);

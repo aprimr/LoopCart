@@ -25,8 +25,8 @@ export default function NewsletterSubscribe() {
 
           {/* Content Overlay */}
           <div className="relative z-10 flex flex-col items-center text-center space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Stay in the Loop
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight font-poppins">
+              Stay in the LOOP
             </h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl">
               Subscribe to our newsletter for exclusive offers and discounts.

@@ -7,6 +7,7 @@ import {
   Layers,
   Wallet,
   Users,
+  Star,
   MessageCircle,
   Settings,
   Home,
@@ -53,6 +54,11 @@ const AdminSidebar = () => {
       path: "/admin/finance",
     },
     {
+      name: "Reviews",
+      icon: <Star className="w-5 h-5 md:w-7 md:h-7" />,
+      path: "/admin/finance",
+    },
+    {
       name: "Feedback",
       icon: <MessageCircle className="w-5 h-5 md:w-7 md:h-7" />,
       path: "/admin/feedback",
@@ -75,7 +81,7 @@ const AdminSidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-3 md:gap-4">
+      <nav className="flex flex-col gap-3 md:gap-3">
         {menuItems.map(({ name, icon, path }) => (
           <NavLink
             key={name}
