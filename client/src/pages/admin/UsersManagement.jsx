@@ -3,11 +3,14 @@ import axios from "../../services/axios";
 import { Trash2, Pencil, X, Calendar } from "lucide-react";
 import { useEffect } from "react";
 import Pagination from "../../components/Pagination";
+import { toast } from "sonner";
+import UsersSkeleton from "../../components/Skeletons/UsersSkeleton";
 
 function UsersManagement() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
 
@@ -28,9 +31,16 @@ function UsersManagement() {
   });
 
   useEffect(() => {
-    axios.get("/admin/users").then((res) => {
-      setUsers(res.data);
-    });
+    setIsLoading(true);
+    try {
+      axios.get("/admin/users").then((res) => {
+        setUsers(res.data);
+        setIsLoading(false);
+      });
+    } catch (error) {
+      toast.error("Failed to fetch users");
+      setIsLoading(false);
+    }
   }, []);
 
   const handleDelete = (id) => {
@@ -88,6 +98,10 @@ function UsersManagement() {
     );
     closeModal();
   };
+
+  if (isLoading) {
+    return <UsersSkeleton />;
+  }
 
   return (
     <>

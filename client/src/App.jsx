@@ -21,6 +21,7 @@ import useUserStore from "./store/userStore";
 import Layout from "./Layout/Layout";
 import AdminLayout from "./Layout/AdminLayout";
 import UsersManagement from "./pages/admin/UsersManagement";
+import UsersSkeleton from "./components/Skeletons/UsersSkeleton";
 
 function App() {
   const { isLogined, user } = useUserStore((state) => state);
@@ -92,6 +93,8 @@ function App() {
           </Route>
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
+          {/* extra */}
+          <Route path="/extra" element={<UsersSkeleton />} />
         </Routes>
         <Toaster
           position="top-center"
