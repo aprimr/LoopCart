@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import useUserStore from "../../store/userStore";
 import { imgToBase64 } from "../../utils/imgToBase64";
+import useDashboardState from "../../store/dashboardStore";
 import {
   UsersRound,
   Package,
@@ -15,7 +16,6 @@ import {
   UploadCloud,
   Trash2,
   Edit3,
-  X,
 } from "lucide-react";
 import ps5 from "../../assets/images/ps5.png";
 
@@ -24,6 +24,9 @@ function AdminDashboard() {
   const [image1, setImage1] = useState(null); // cover image
   const [image2, setImage2] = useState(null); // cover image
   const [image3, setImage3] = useState(null); // card image
+
+  const { totalUsers, totalOrders, totalProducts, totalSales } =
+    useDashboardState();
 
   const slides = [
     {
@@ -60,6 +63,12 @@ function AdminDashboard() {
     },
   ];
 
+  useEffect(() => {
+    try {
+      axios.get("/admin/summary").then((res) => {});
+    } catch (error) {}
+  }, []);
+
   const handleImageChange = async (e, setImage) => {
     const file = e.target.files[0];
     if (file) {
@@ -91,7 +100,9 @@ function AdminDashboard() {
               <p className="text-lg font-medium text-white/80 font-rubik">
                 Total Users
               </p>
-              <p className="text-3xl font-semibold font-poppins">1,234</p>
+              <p className="text-3xl font-semibold font-poppins">
+                {totalUsers}
+              </p>
             </div>
           </div>
         </NavLink>
@@ -106,7 +117,9 @@ function AdminDashboard() {
               <p className="text-lg font-medium text-white/80 font-rubik">
                 Total Orders
               </p>
-              <p className="text-3xl font-semibold font-poppins">567</p>
+              <p className="text-3xl font-semibold font-poppins">
+                {totalOrders}
+              </p>
             </div>
           </div>
         </NavLink>
@@ -121,7 +134,9 @@ function AdminDashboard() {
               <p className="text-lg font-medium text-white/80 font-rubik">
                 Total Sales
               </p>
-              <p className="text-3xl font-semibold font-poppins">रु 45,678</p>
+              <p className="text-3xl font-semibold font-poppins">
+                रु {totalSales}
+              </p>
             </div>
           </div>
         </NavLink>
@@ -136,7 +151,9 @@ function AdminDashboard() {
               <p className="text-lg font-medium text-white/80 font-rubik">
                 Products
               </p>
-              <p className="text-3xl font-semibold font-poppins">89</p>
+              <p className="text-3xl font-semibold font-poppins">
+                {totalProducts}
+              </p>
             </div>
           </div>
         </NavLink>
