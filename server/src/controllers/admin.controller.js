@@ -26,4 +26,18 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-export { getAllUsers, dashboardSummary };
+const deleteUser = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    // get user
+    const user = await User.findOne({ _id });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    // delete user
+    await User.deleteOne({ _id });
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { getAllUsers, dashboardSummary, deleteUser };
