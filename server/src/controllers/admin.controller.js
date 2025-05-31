@@ -4,7 +4,7 @@ const dashboardSummary = async (req, res) => {
   try {
     // get all users
     const users = await User.find();
-    res.status(200).json(users);
+    res.status(200).json({ totalUsers: users.length });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

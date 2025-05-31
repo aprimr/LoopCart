@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import axios from "../../services/axios";
 import { NavLink } from "react-router-dom";
 import useUserStore from "../../store/userStore";
 import { imgToBase64 } from "../../utils/imgToBase64";
@@ -25,8 +27,16 @@ function AdminDashboard() {
   const [image2, setImage2] = useState(null); // cover image
   const [image3, setImage3] = useState(null); // card image
 
-  const { totalUsers, totalOrders, totalProducts, totalSales } =
-    useDashboardState();
+  const {
+    totalUsers,
+    totalOrders,
+    totalProducts,
+    totalSales,
+    updateUsers,
+    updateOrders,
+    updateProducts,
+    updateSales,
+  } = useDashboardState();
 
   const slides = [
     {
@@ -64,9 +74,16 @@ function AdminDashboard() {
   ];
 
   useEffect(() => {
-    try {
-      axios.get("/admin/summary").then((res) => {});
-    } catch (error) {}
+    const fetchSummary = async () => {
+      try {
+        const res = await axios.get("/admin/summary");
+        updateUsers(res.data.totalUsers);
+      } catch (error) {
+        toast.error("Failed to fetch data");
+      }
+    };
+
+    fetchSummary();
   }, []);
 
   const handleImageChange = async (e, setImage) => {

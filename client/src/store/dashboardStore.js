@@ -6,7 +6,7 @@ const useDashboardState = create((set) => ({
   totalProducts: 0,
   totalSales: 0,
 
-  updateUser: (users) =>
+  updateUsers: (users) =>
     set({
       totalUsers: users,
     }),
