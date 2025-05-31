@@ -12,7 +12,6 @@ function UsersManagement() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -61,6 +60,7 @@ function UsersManagement() {
         setUsers(users.filter((user) => user._id !== id));
         toast.success(`User deleted successfully`);
       }
+      setIsEditModalOpen(false);
     } catch (error) {
       toast.error("Failed to delete user");
     }
@@ -104,15 +104,34 @@ function UsersManagement() {
     }));
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!editingUser) return;
 
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u._id === editingUser._id ? { ...u, ...formData } : u
-      )
+    console.log(
+      `Form data is:  ${JSON.stringify(formData.role)} ${JSON.stringify(
+        formData.isActive
+      )} ${JSON.stringify(formData.isVerified)}`
     );
+
+    try {
+      const response = await axios.put(
+        `/admin/user/${editingUser._id}`,
+        formData
+      );
+      if (response.status === 200) {
+        toast.success("User updated successfully");
+
+        setUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u._id === editingUser._id ? { ...u, ...formData } : u
+          )
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to update user");
+    }
+
     closeModal();
   };
 
@@ -158,13 +177,13 @@ function UsersManagement() {
           </div>
         </div>
 
-        {/* Desktop & Tablet Table View */}
+        {/* Desktop Table View */}
         <div
           className="hidden md:flex max-w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
           style={{ width: "calc(100vw - 9rem)" }}
         >
           <table className="min-w-[900px] w-full table-auto bg-white dark:bg-gray-900 text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800">
+            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               <tr>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
                   Profile
@@ -388,9 +407,9 @@ function UsersManagement() {
             {/* Modal Title */}
             <h2
               id="editUserTitle"
-              className="text-xl font-semibold text-gray-900 dark:text-white mb-5"
+              className="text-xl font-semibold text-gray-900 dark:text-white mb-5 font-poppins"
             >
-              Edit User
+              Update User
             </h2>
 
             <form onSubmit={handleFormSubmit} className="space-y-4">
@@ -398,7 +417,7 @@ function UsersManagement() {
                 <img
                   src={formData.profilePic}
                   alt="profile"
-                  className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-600 object-cover mx-auto mb-4"
+                  className="w-24 h-24 rounded-full border-2 border-gray-300 dark:border-gray-600 object-cover mx-auto mb-4"
                 />
               )}
 
@@ -421,7 +440,7 @@ function UsersManagement() {
                     type={type}
                     disabled
                     value={formData[id]}
-                    className="w-full rounded-md bg-gray-200 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                    className="w-full rounded-md bg-gray-200 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-600 dark:text-gray-400 font-poppins cursor-not-allowed"
                   />
                 </div>
               ))}
@@ -438,7 +457,7 @@ function UsersManagement() {
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
-                  className="w-full  bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
+                  className="w-full font-poppins bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
@@ -453,7 +472,7 @@ function UsersManagement() {
                 ].map(({ name, label }) => (
                   <label
                     key={name}
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex items-center gap-2 cursor-pointer "
                   >
                     <input
                       type="checkbox"
@@ -462,7 +481,7 @@ function UsersManagement() {
                       onChange={handleInputChange}
                       className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded-full focus:ring-1 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 font-poppins">
                       {label}
                     </span>
                   </label>
@@ -479,135 +498,8 @@ function UsersManagement() {
                   Cancel
                 </button>
                 <button
-                  type="submit"
-                  className="px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700"
-                >
-                  Delete
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  Update
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {isDeleteModalOpen && (
-        <div
-          className="fixed inset-0 z-50  flex items-center justify-center bg-black/50 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="editUserTitle"
-        >
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900 relative">
-            {/* Close Button */}
-            <button
-              onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              aria-label="Close edit modal"
-            >
-              <X size={22} />
-            </button>
-
-            {/* Modal Title */}
-            <h2
-              id="editUserTitle"
-              className="text-xl font-semibold text-gray-900 dark:text-white mb-5"
-            >
-              Edit User
-            </h2>
-
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              {formData.profilePic && (
-                <img
-                  src={formData.profilePic}
-                  alt="profile"
-                  className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-600 object-cover mx-auto mb-4"
-                />
-              )}
-
-              {/* Read-only Fields */}
-              {[
-                { id: "_id", label: "User ID", type: "text" },
-                { id: "fullName", label: "Full Name", type: "text" },
-                { id: "email", label: "Email", type: "email" },
-              ].map(({ id, label, type }) => (
-                <div key={id}>
-                  <label
-                    htmlFor={id}
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 "
-                  >
-                    {label}
-                  </label>
-                  <input
-                    id={id}
-                    name={id}
-                    type={type}
-                    disabled
-                    value={formData[id]}
-                    className="w-full rounded-md bg-gray-200 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-600 dark:text-gray-400 cursor-not-allowed"
-                  />
-                </div>
-              ))}
-
-              <div>
-                <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Role
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full  bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              {/* Custom Checkboxes */}
-              <div className="flex items-center gap-6 pt-1">
-                {[
-                  { name: "isVerified", label: "Verified" },
-                  { name: "isActive", label: "Active" },
-                ].map(({ name, label }) => (
-                  <label
-                    key={name}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      name={name}
-                      checked={formData[name]}
-                      onChange={handleInputChange}
-                      className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded-full focus:ring-1 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4">
-                <button
                   type="button"
-                  onClick={closeModal}
-                  className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
+                  onClick={() => handleDelete(formData._id)}
                   className="px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700"
                 >
                   Delete

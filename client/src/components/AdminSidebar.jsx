@@ -81,7 +81,7 @@ const AdminSidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-3 md:gap-3">
+      <nav className="flex flex-col overflow-scroll gap-3 md:gap-3">
         {menuItems.map(({ name, icon, path }) => (
           <NavLink
             key={name}
@@ -115,7 +115,7 @@ const AdminSidebar = () => {
         </div>
       </nav>
 
-      {/* Back to homepage only on desktop */}
+      {/* Back to homepage */}
       <div className="mt-auto pt-4">
         <NavLink
           to="/"
