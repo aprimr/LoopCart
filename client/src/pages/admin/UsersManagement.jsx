@@ -1,9 +1,22 @@
-import { useState } from "react";
-import { useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  Search,
+  Trash2,
+  Pencil,
+  X,
+  Calendar,
+  Check,
+  AlertCircle,
+  UserCheck,
+  Shield,
+  User,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Trash2, Pencil, X, Calendar, Search } from "lucide-react";
 import axios from "../../services/axios";
-import Pagination from "../../components/Pagination";
 import UsersSkeleton from "../../components/Skeletons/UsersSkeleton";
 
 function UsersManagement() {
@@ -16,7 +29,9 @@ function UsersManagement() {
 
   useEffect(() => {
     if (search) {
-      setFilteredUsers(users.filter((user) => user.email.includes(search)));
+      setFilteredUsers(
+        users.filter((user) => user.email.toLowerCase().includes(search))
+      );
     } else {
       setFilteredUsers(users);
     }
@@ -24,10 +39,11 @@ function UsersManagement() {
 
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
+  const [postsPerPage] = useState(8);
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
   const currentUsers = filteredUsers.slice(firstPostIndex, lastPostIndex);
+  const totalPages = Math.ceil(filteredUsers.length / postsPerPage);
 
   const [formData, setFormData] = useState({
     _id: "",
@@ -48,17 +64,32 @@ function UsersManagement() {
         setIsLoading(false);
       });
     } catch (error) {
-      toast.error("Failed to fetch users");
+      toast.error("Failed to fetch users", {
+        description: "There was an error loading users",
+        action: { label: "Retry", onClick: () => fetchUsers() },
+      });
       setIsLoading(false);
     }
   }, []);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get("/admin/users");
+      setUsers(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error("Failed to fetch users");
+      setIsLoading(false);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(`/admin/user/${id}`);
       if (response.status === 200) {
         setUsers(users.filter((user) => user._id !== id));
-        toast.success(`User deleted successfully`);
+        toast.success("User deleted successfully");
       }
       setIsEditModalOpen(false);
     } catch (error) {
@@ -89,10 +120,20 @@ function UsersManagement() {
   const roleColor = (role) => {
     switch (role) {
       case "admin":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+        return "bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-800";
       case "user":
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+        return "bg-gray-100 text-gray-800 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700";
+    }
+  };
+
+  const roleIcon = (role) => {
+    switch (role) {
+      case "admin":
+        return <Shield className="w-3 h-3" />;
+      case "user":
+      default:
+        return <User className="w-3 h-3" />;
     }
   };
 
@@ -107,12 +148,6 @@ function UsersManagement() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!editingUser) return;
-
-    console.log(
-      `Form data is:  ${JSON.stringify(formData.role)} ${JSON.stringify(
-        formData.isActive
-      )} ${JSON.stringify(formData.isVerified)}`
-    );
 
     try {
       const response = await axios.put(
@@ -135,26 +170,31 @@ function UsersManagement() {
     closeModal();
   };
 
-  if (isLoading) {
-    return <UsersSkeleton />;
-  }
-
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white">
       <div
-        className={`p-4 sm:p-6 w-full max-w-full mx-auto space-y-6 ${
+        className={`p-3 sm:p-4 md:p-6 w-full max-w-full mx-auto space-y-4 sm:space-y-6 ${
           isEditModalOpen ? "blur-sm" : ""
         }`}
       >
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-4xl font-roboto font-bold text-gray-800 dark:text-white">
-            User Management
-          </h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+          {/* Header */}
+          <div className="mb-2 md:mb-4">
+            <div className="flex items-center justify-between ">
+              <div className="flex items-center gap-4">
+                <div>
+                  <h1 className="text-4xl font-semibold font-poppins text-gray-900 dark:text-white">
+                    User Management
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* Search */}
+          {/* Search Bar */}
           <div className="relative w-full md:w-72">
-            <div className="absolute left-1 top-1/2 -translate-y-1/2  p-[6px] rounded-full ">
-              <Search className="w-4 h-4" />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <Search className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <input
               type="text"
@@ -163,13 +203,13 @@ function UsersManagement() {
                 setSearch(e.target.value.toLowerCase());
               }}
               placeholder="Search user by Email"
-              className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-10 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 p-[6px] rounded-full hover:text-blue-600 dark:hover:text-blue-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -177,336 +217,474 @@ function UsersManagement() {
           </div>
         </div>
 
-        {/* Desktop Table View */}
-        <div
-          className="hidden md:flex max-w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
-          style={{ width: "calc(100vw - 9rem)" }}
-        >
-          <table className="min-w-[900px] w-full table-auto bg-white dark:bg-gray-900 text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-              <tr>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
-                  Profile
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase max-w-[150px] truncate">
-                  Full Name
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase max-w-[200px] truncate">
-                  Email
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
-                  Role
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
-                  Verified
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
-                  Status
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap flex items-center space-x-1">
-                  Joined
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {currentUsers.map((user, idx) => (
-                <tr
+        {isLoading ? (
+          <UsersSkeleton />
+        ) : (
+          <>
+            {/* Desktop Table View - With horizontal scroll */}
+            <div className="hidden md:block overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+              <div className="w-full overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+                  <thead className="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Profile
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Full Name
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Email
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Role
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Verified
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Status
+                      </th>
+                      <th className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Joined
+                      </th>
+                      <th className="px-4 py-3.5 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+                    {currentUsers.map((user) => (
+                      <tr
+                        key={user._id}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      >
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                            <img
+                              src={
+                                user.profilePic ||
+                                "/placeholder.svg?height=40&width=40"
+                              }
+                              alt={user.fullName}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {user.fullName}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {user.email}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium capitalize whitespace-nowrap">
+                            <span
+                              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${roleColor(
+                                user.role
+                              )}`}
+                            >
+                              {roleIcon(user.role)}
+                              {user.role}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                              user.isVerified
+                                ? "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-800"
+                                : "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-200 dark:border-yellow-800"
+                            }`}
+                          >
+                            {user.isVerified ? (
+                              <Check className="w-3 h-3" />
+                            ) : (
+                              <AlertCircle className="w-3 h-3" />
+                            )}
+                            {user.isVerified ? "Verified" : "Unverified"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                              user.isActive
+                                ? "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-800"
+                                : "bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/50 dark:text-red-200 dark:border-red-800"
+                            }`}
+                          >
+                            {user.isActive ? (
+                              <Check className="w-3 h-3" />
+                            ) : (
+                              <X className="w-3 h-3" />
+                            )}
+                            {user.isActive ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => handleUpdate(user)}
+                              className="p-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                              aria-label={`Edit ${user.fullName}`}
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(user._id)}
+                              className="p-1.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                              aria-label={`Delete ${user.fullName}`}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card View - Optimized for small screens */}
+            <div className="md:hidden space-y-3 w-full">
+              {currentUsers.map((user) => (
+                <div
                   key={user._id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="p-3 sm:p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm w-full"
                 >
-                  <td className="px-3 py-2 whitespace-nowrap">
-                    <img
-                      src={user.profilePic}
-                      alt={user.fullName}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap max-w-[150px] truncate text-gray-900 dark:text-white font-medium text-sm">
-                    {user.fullName}
-                  </td>
-                  <td className="px-3 py-2 text-gray-500 dark:text-gray-400 max-w-[200px] truncate break-words text-sm">
-                    {user.email}
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap text-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
+                      <img
+                        src={
+                          user.profilePic ||
+                          "/placeholder.svg?height=48&width=48"
+                        }
+                        alt={user.fullName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
+                        {user.fullName}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
                     <span
-                      className={`inline-block px-2 py-1 rounded-md font-semibold capitalize ${roleColor(
+                      className={`flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${roleColor(
                         user.role
                       )}`}
-                      title={user.role}
                     >
+                      {roleIcon(user.role)}
                       {user.role}
                     </span>
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap text-sm">
+
+                    {/* Separated Verified and Active status */}
                     <span
-                      className={`inline-block px-2 py-1 rounded-md font-semibold ${
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${
                         user.isVerified
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          ? "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-800"
+                          : "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-200 dark:border-yellow-800"
                       }`}
-                      title={user.isVerified ? "Verified" : "Not Verified"}
                     >
-                      {user.isVerified ? "Verified" : "Not Verified"}
+                      {user.isVerified ? (
+                        <Check className="w-3 h-3" />
+                      ) : (
+                        <AlertCircle className="w-3 h-3" />
+                      )}
+                      {user.isVerified ? "Verified" : "Unverified"}
                     </span>
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap text-sm">
+
                     <span
-                      className={`inline-block px-2 py-1 rounded-md font-semibold ${
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${
                         user.isActive
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          ? "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-800"
+                          : "bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/50 dark:text-red-200 dark:border-red-800"
                       }`}
-                      title={user.isActive ? "Active" : "Inactive"}
                     >
+                      {user.isActive ? (
+                        <Check className="w-3 h-3" />
+                      ) : (
+                        <X className="w-3 h-3" />
+                      )}
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap text-gray-500 dark:text-gray-400 text-sm">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap text-sm">
-                    <div className="flex space-x-2">
+                  </div>
+
+                  <div className="mt-3 flex justify-between items-center">
+                    <div className="inline-flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                      <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </div>
+                    <div className="flex gap-2">
                       <button
                         onClick={() => handleUpdate(user)}
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                        className="p-1 sm:p-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
                         aria-label={`Edit ${user.fullName}`}
                       >
                         <Pencil size={16} />
                       </button>
                       <button
                         onClick={() => handleDelete(user._id)}
-                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                        className="p-1 sm:p-1.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
                         aria-label={`Delete ${user.fullName}`}
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-        {/* Mobile Card View */}
-        <div className="md:hidden space-y-3">
-          {currentUsers.map((user, idx) => (
-            <div
-              key={user._id}
-              className="p-3 bg-white dark:bg-gray-900 rounded-lg shadow"
-            >
-              <div className="flex items-center space-x-3">
-                <img
-                  src={user.profilePic}
-                  alt={user.fullName}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-semibold text-gray-800 dark:text-white truncate">
-                    {user.fullName}
-                  </h3>
-                  <p className="text-xs font-poppins text-gray-500 dark:text-gray-400 break-all truncate">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-1 text-xs text-gray-700 dark:text-gray-300">
-                <span
-                  className={`inline-block px-2 py-0.5 rounded-md font-semibold capitalize ${roleColor(
-                    user.role
-                  )}`}
-                  title={user.role}
-                >
-                  {user.role}
-                </span>
-                <span
-                  className={`inline-block px-2 py-0.5 rounded-md font-semibold ${
-                    user.isVerified
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                  }`}
-                  title={user.isVerified ? "Verified" : "Not Verified"}
-                >
-                  {user.isVerified ? "Verified" : "Not Verified"}
-                </span>
-                <span
-                  className={`inline-block px-2 py-0.5 rounded-md font-semibold ${
-                    user.isActive
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                  }`}
-                  title={user.isActive ? "Active" : "Inactive"}
-                >
-                  {user.isActive ? "Active" : "Inactive"}
-                </span>
-              </div>
-              <div className="mt-2 flex justify-between items-end space-x-1 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex items-center gap-1">
-                  <Calendar size={14} />
-                  <span>{new Date(user.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="mt-2 flex gap-3">
-                  <button
-                    onClick={() => handleUpdate(user)}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                    aria-label={`Edit ${user.fullName}`}
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                    onClick={() => handleDelete(user._id)}
-                    aria-label={`Delete ${user.fullName}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
             </div>
-          ))}
-        </div>
 
-        {filteredUsers.length > 0 ? (
-          filteredUsers.length > postsPerPage && (
-            <div className=" mt-4 flex justify-center">
-              <Pagination
-                currentPage={currentPage}
-                postsPerPage={postsPerPage}
-                totalPosts={users.length}
-                onPageChange={setCurrentPage}
-              />
-            </div>
-          )
-        ) : (
-          <p className="mt-4 w-full flex justify-center text-sm text-gray-600 dark:text-gray-400">
-            No users found.
-          </p>
+            {/* Pagination - Responsive */}
+            {filteredUsers.length > 0 ? (
+              filteredUsers.length > postsPerPage && (
+                <div className="flex justify-center mt-4 sm:mt-6">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className={`p-1 sm:p-2 rounded-lg ${
+                        currentPage === 1
+                          ? "text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium ${
+                            currentPage === page
+                              ? "bg-blue-600 text-white"
+                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                      className={`p-1 sm:p-2 rounded-lg ${
+                        currentPage === totalPages
+                          ? "text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
+                </div>
+              )
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 sm:py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                <AlertCircle className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-600 mb-2 sm:mb-3" />
+                <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
+                  No users found
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Try adjusting your search or filters
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* Update / Delete User Popup */}
+      {/* Edit Modal - Responsive */}
       {isEditModalOpen && (
-        <div
-          className="fixed inset-0 z-50  flex items-center justify-center bg-black/50 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="editUserTitle"
-        >
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900 relative">
-            {/* Close Button */}
-            <button
-              onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              aria-label="Close edit modal"
-            >
-              <X size={22} />
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+          <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-xl shadow-xl overflow-hidden">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                Update User
+              </h2>
+              <button
+                onClick={closeModal}
+                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            {/* Modal Title */}
-            <h2
-              id="editUserTitle"
-              className="text-xl font-semibold text-gray-900 dark:text-white mb-5 font-poppins"
-            >
-              Update User
-            </h2>
+            <form onSubmit={handleFormSubmit}>
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[60vh] overflow-y-auto">
+                {/* User Profile */}
+                {formData.profilePic && (
+                  <div className="flex justify-center">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border-4 border-white dark:border-gray-800 shadow-md">
+                      <img
+                        src={formData.profilePic || "/placeholder.svg"}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
 
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              {formData.profilePic && (
-                <img
-                  src={formData.profilePic}
-                  alt="profile"
-                  className="w-24 h-24 rounded-full border-2 border-gray-300 dark:border-gray-600 object-cover mx-auto mb-4"
-                />
-              )}
-
-              {/* Read-only Fields */}
-              {[
-                { id: "_id", label: "User ID", type: "text" },
-                { id: "fullName", label: "Full Name", type: "text" },
-                { id: "email", label: "Email", type: "email" },
-              ].map(({ id, label, type }) => (
-                <div key={id}>
-                  <label
-                    htmlFor={id}
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 "
-                  >
-                    {label}
-                  </label>
-                  <input
-                    id={id}
-                    name={id}
-                    type={type}
-                    disabled
-                    value={formData[id]}
-                    className="w-full rounded-md bg-gray-200 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-600 dark:text-gray-400 font-poppins cursor-not-allowed"
-                  />
-                </div>
-              ))}
-
-              <div>
-                <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Role
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full font-poppins bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              {/* Custom Checkboxes */}
-              <div className="flex items-center gap-6 pt-1">
-                {[
-                  { name: "isVerified", label: "Verified" },
-                  { name: "isActive", label: "Active" },
-                ].map(({ name, label }) => (
-                  <label
-                    key={name}
-                    className="flex items-center gap-2 cursor-pointer "
-                  >
+                {/* Read-only Fields */}
+                <div className="space-y-3 sm:space-y-4">
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      User ID
+                    </label>
                     <input
-                      type="checkbox"
-                      name={name}
-                      checked={formData[name]}
-                      onChange={handleInputChange}
-                      className="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded-full focus:ring-1 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                      type="text"
+                      disabled
+                      value={formData._id}
+                      className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 dark:text-gray-400 cursor-not-allowed text-xs sm:text-sm"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300 font-poppins">
-                      {label}
-                    </span>
-                  </label>
-                ))}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      disabled
+                      value={formData.fullName}
+                      className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 dark:text-gray-400 cursor-not-allowed text-xs sm:text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      disabled
+                      value={formData.email}
+                      className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 dark:text-gray-400 cursor-not-allowed text-xs sm:text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Role
+                    </label>
+                    <select
+                      name="role"
+                      value={formData.role}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col space-y-3">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Status
+                    </label>
+                    <div className="flex flex-col gap-3">
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            name="isVerified"
+                            checked={formData.isVerified}
+                            onChange={handleInputChange}
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-8 sm:w-10 h-4 sm:h-5 rounded-full ${
+                              formData.isVerified
+                                ? "bg-green-500 dark:bg-green-600"
+                                : "bg-gray-300 dark:bg-gray-600"
+                            } transition-colors`}
+                          ></div>
+                          <div
+                            className={`absolute left-0.5 top-0.5 bg-white w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-transform ${
+                              formData.isVerified
+                                ? "translate-x-4 sm:translate-x-5"
+                                : ""
+                            }`}
+                          ></div>
+                        </div>
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                          Verified
+                        </span>
+                      </label>
+
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            name="isActive"
+                            checked={formData.isActive}
+                            onChange={handleInputChange}
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-8 sm:w-10 h-4 sm:h-5 rounded-full ${
+                              formData.isActive
+                                ? "bg-green-500 dark:bg-green-600"
+                                : "bg-gray-300 dark:bg-gray-600"
+                            } transition-colors`}
+                          ></div>
+                          <div
+                            className={`absolute left-0.5 top-0.5 bg-white w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-transform ${
+                              formData.isActive
+                                ? "translate-x-4 sm:translate-x-5"
+                                : ""
+                            }`}
+                          ></div>
+                        </div>
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                          Active
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-xs sm:text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(formData._id)}
-                  className="px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700"
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm"
                 >
                   Delete
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm"
                 >
                   Update
                 </button>
@@ -515,7 +693,7 @@ function UsersManagement() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

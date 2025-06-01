@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import axios from "../../services/axios";
-import { NavLink } from "react-router-dom";
-import useUserStore from "../../store/userStore";
-import { imgToBase64 } from "../../utils/imgToBase64";
-import useDashboardState from "../../store/dashboardStore";
+"use client";
+
+import { useState } from "react";
 import {
   UsersRound,
   Package,
@@ -13,30 +9,33 @@ import {
   PackagePlus,
   PackageCheck,
   PackageX,
-  ClockAlert,
+  ClockIcon as ClockAlert,
   Image,
   UploadCloud,
   Trash2,
   Edit3,
+  TrendingUp,
+  ArrowUpRight,
+  Plus,
 } from "lucide-react";
-import ps5 from "../../assets/images/ps5.png";
+
+// Mock data and functions
+const mockUser = { fullName: "John Admin" };
+const mockStats = {
+  totalUsers: 1247,
+  totalOrders: 856,
+  totalSales: 125000,
+  totalProducts: 342,
+};
 
 function AdminDashboard() {
-  const { user } = useUserStore((state) => state);
-  const [image1, setImage1] = useState(null); // cover image
-  const [image2, setImage2] = useState(null); // cover image
-  const [image3, setImage3] = useState(null); // card image
-
-  const {
-    totalUsers,
-    totalOrders,
-    totalProducts,
-    totalSales,
-    updateUsers,
-    updateOrders,
-    updateProducts,
-    updateSales,
-  } = useDashboardState();
+  const [image1, setImage1] = useState(null);
+  const [image2, setImage2] = useState(null);
+  const [image3, setImage3] = useState(null);
+  const [slideTitle, setSlideTitle] = useState("");
+  const [slideSubtitle, setSlideSubtitle] = useState("");
+  const [slideTags, setSlideTags] = useState("");
+  const [slideLink, setSlideLink] = useState("");
 
   const slides = [
     {
@@ -44,7 +43,7 @@ function AdminDashboard() {
       title: "New Collection Drop",
       tag: "trending",
       category: ["Fashion", "Summer"],
-      image: "https://via.placeholder.com/300x300.png?text=Slide+1",
+      image: "/placeholder.svg?height=120&width=120",
       detailsPath: "/collections/new",
     },
     {
@@ -52,7 +51,7 @@ function AdminDashboard() {
       title: "Mega Sale Week",
       tag: "sale",
       category: ["Deals", "Electronics"],
-      image: "https://via.placeholder.com/300x300.png?text=Slide+2",
+      image: "/placeholder.svg?height=120&width=120",
       detailsPath: "/sales/week",
     },
     {
@@ -60,416 +59,547 @@ function AdminDashboard() {
       title: "Winter Clearance",
       tag: "clearance",
       category: ["Winter", "Clothing"],
-      image: "https://via.placeholder.com/300x300.png?text=Slide+3",
+      image: "/placeholder.svg?height=120&width=120",
       detailsPath: "/winter/clearance",
     },
     {
       id: "4",
-      title: "Winter Clearance",
-      tag: "clearance",
-      category: ["Winter", "Clothing"],
-      image: "https://via.placeholder.com/300x300.png?text=Slide+3",
-      detailsPath: "/winter/clearance",
+      title: "Spring Collection",
+      tag: "new",
+      category: ["Spring", "Accessories"],
+      image: "/placeholder.svg?height=120&width=120",
+      detailsPath: "/spring/collection",
     },
   ];
 
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const res = await axios.get("/admin/summary");
-        updateUsers(res.data.totalUsers);
-      } catch (error) {
-        toast.error("Failed to fetch data");
-      }
-    };
-
-    fetchSummary();
-  }, []);
+  const orderStats = [
+    {
+      label: "New Orders",
+      value: 120,
+      icon: PackagePlus,
+      color: "bg-blue-500",
+      bgColor: "bg-blue-50 dark:bg-blue-900/20",
+    },
+    {
+      label: "In Transit",
+      value: 54,
+      icon: Truck,
+      color: "bg-purple-500",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+    },
+    {
+      label: "Delivered",
+      value: 342,
+      icon: PackageCheck,
+      color: "bg-green-500",
+      bgColor: "bg-green-50 dark:bg-green-900/20",
+    },
+    {
+      label: "Pending",
+      value: 89,
+      icon: ClockAlert,
+      color: "bg-yellow-500",
+      bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+    },
+    {
+      label: "Cancelled",
+      value: 27,
+      icon: PackageX,
+      color: "bg-red-500",
+      bgColor: "bg-red-50 dark:bg-red-900/20",
+    },
+    {
+      label: "Refunded",
+      value: 15,
+      icon: Wallet,
+      color: "bg-orange-500",
+      bgColor: "bg-orange-50 dark:bg-orange-900/20",
+    },
+  ];
 
   const handleImageChange = async (e, setImage) => {
     const file = e.target.files[0];
     if (file) {
-      const base64 = await imgToBase64(file);
-      setImage(base64);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImage(event.target.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleAddSlide = () => {
+    if (!slideTitle.trim()) {
+      alert("Please enter a slide title");
+      return;
+    }
+    // Add slide logic here
+    console.log("Adding slide:", {
+      slideTitle,
+      slideSubtitle,
+      slideTags,
+      slideLink,
+      image3,
+    });
+
+    // Reset form
+    setSlideTitle("");
+    setSlideSubtitle("");
+    setSlideTags("");
+    setSlideLink("");
+    setImage3(null);
+  };
+
   return (
-    <div className="py-1 sm:px-6 md:px-10 bg-white dark:bg-black min-h-screen text-gray-900 dark:text-gray-100">
-      {/* Header */}
-      <header className="mb-6 md:mb-8">
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-poppins">
-          Welcome back, {user.fullName}!
-        </p>
-        <h1 className="text-4xl font-bold mb-1 sm:mb-2 font-rubik">
-          Dashboard Overview
-        </h1>
-      </header>
-      {/* Summary Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-6">
-        <NavLink
-          to="/admin/users"
-          className="transition-transform hover:scale-[1.01] active:scale-100"
-        >
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl shadow-md p-6 flex items-center gap-4">
-            <UsersRound className="w-8 h-8 sm:w-12 sm:h-12" />
-            <div className="flex flex-col">
-              <p className="text-lg font-medium text-white/80 font-rubik">
+    <div className="min-h-screen bg-white dark:bg-black">
+      <div className="w-full mx-auto px-3 sm:px-4 md:px-6 py-4 md:py-6">
+        {/* Header */}
+        <header className="mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base text-gray-600 dark:text-gray-400 mb-1">
+                Welcome back, {mockUser.fullName}!
+              </p>
+              <h1 className="text-4xl font-semibold font-poppins text-gray-900 dark:text-white">
+                Dashboard Overview
+              </h1>
+            </div>
+            <div className="hidden md:flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm font-medium text-green-700 dark:text-green-300">
+                  Server Online
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
+                <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm font-medium text-rose-700 dark:text-rose-300">
+                  Server Offline
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Summary Cards */}
+        <section className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6">
+          <div className="group bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <div className="p-2 md:p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg md:rounded-xl">
+                <UsersRound className="w-4 h-4 md:w-6 md:h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
                 Total Users
               </p>
-              <p className="text-3xl font-semibold font-poppins">
-                {totalUsers}
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                {mockStats.totalUsers.toLocaleString()}
               </p>
+              <div className="flex items-center gap-1 mt-1 md:mt-2">
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                <span className="text-xs md:text-sm text-green-600 dark:text-green-400">
+                  +12% from last month
+                </span>
+              </div>
             </div>
           </div>
-        </NavLink>
 
-        <NavLink
-          to="/admin/orders"
-          className="transition-transform hover:scale-[1.01] active:scale-100"
-        >
-          <div className="bg-gradient-to-r from-emerald-400 to-emerald-600 text-white rounded-xl shadow-md p-6 flex items-center gap-4">
-            <Package className="w-8 h-8 sm:w-12 sm:h-12" />
-            <div className="flex flex-col">
-              <p className="text-lg font-medium text-white/80 font-rubik">
+          <div className="group bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <div className="p-2 md:p-3 bg-green-100 dark:bg-green-900/30 rounded-lg md:rounded-xl">
+                <Package className="w-4 h-4 md:w-6 md:h-6 text-green-600 dark:text-green-400" />
+              </div>
+              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-green-500 transition-colors" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
                 Total Orders
               </p>
-              <p className="text-3xl font-semibold font-poppins">
-                {totalOrders}
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                {mockStats.totalOrders.toLocaleString()}
               </p>
+              <div className="flex items-center gap-1 mt-1 md:mt-2">
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                <span className="text-xs md:text-sm text-green-600 dark:text-green-400">
+                  +8% from last month
+                </span>
+              </div>
             </div>
           </div>
-        </NavLink>
 
-        <NavLink
-          to="/admin/revenue"
-          className="transition-transform hover:scale-[1.01] active:scale-100"
-        >
-          <div className="bg-gradient-to-r from-yellow-400 to-amber-600 text-white rounded-xl shadow-md p-6 flex items-center gap-4">
-            <Wallet className="w-8 h-8 sm:w-12 sm:h-12" />
-            <div className="flex flex-col">
-              <p className="text-lg font-medium text-white/80 font-rubik">
+          <div className="group bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <div className="p-2 md:p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg md:rounded-xl">
+                <Wallet className="w-4 h-4 md:w-6 md:h-6 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-yellow-500 transition-colors" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
                 Total Sales
               </p>
-              <p className="text-3xl font-semibold font-poppins">
-                रु {totalSales}
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                रु {mockStats.totalSales.toLocaleString()}
               </p>
+              <div className="flex items-center gap-1 mt-1 md:mt-2">
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                <span className="text-xs md:text-sm text-green-600 dark:text-green-400">
+                  +15% from last month
+                </span>
+              </div>
             </div>
           </div>
-        </NavLink>
 
-        <NavLink
-          to="/admin/products"
-          className="transition-transform hover:scale-[1.01] active:scale-100"
-        >
-          <div className="bg-gradient-to-r from-rose-400 to-pink-600 text-white rounded-xl shadow-md p-6 flex items-center gap-4">
-            <Package className="w-8 h-8 sm:w-12 sm:h-12" />
-            <div className="flex flex-col">
-              <p className="text-lg font-medium text-white/80 font-rubik">
+          <div className="group bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <div className="p-2 md:p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg md:rounded-xl">
+                <Package className="w-4 h-4 md:w-6 md:h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-purple-500 transition-colors" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
                 Products
               </p>
-              <p className="text-3xl font-semibold font-poppins">
-                {totalProducts}
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                {mockStats.totalProducts.toLocaleString()}
               </p>
+              <div className="flex items-center gap-1 mt-1 md:mt-2">
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                <span className="text-xs md:text-sm text-green-600 dark:text-green-400">
+                  +5% from last month
+                </span>
+              </div>
             </div>
           </div>
-        </NavLink>
-      </section>
+        </section>
 
-      {/* Order Status Overview */}
-      <div className="mb-2 sm:mb-4">
-        <h2 className="text-2xl sm:text-3xl font-semibold font-rubik">
-          Orders Status
-        </h2>
-      </div>
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-4 sm:gap-6 mb-6">
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-cyan-500 bg-transparent text-black dark:text-white">
-          <PackagePlus className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">New Orders</p>
-            <p className="text-2xl font-semibold font-poppins">120</p>
+        {/* Order Status Overview */}
+        <section className="mb-6">
+          <div className="mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+              Order Status Overview
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Track your order fulfillment progress
+            </p>
           </div>
-        </div>
 
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-blue-400 bg-transparent text-black dark:text-white">
-          <Truck className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">In Transit</p>
-            <p className="text-2xl font-semibold font-poppins">54</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {orderStats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div
+                  key={index}
+                  className={`${stat.bgColor} rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border border-gray-200 dark:border-gray-700`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 sm:p-2 ${stat.color} rounded-lg`}>
+                      <IconComponent className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
+                      {stat.label}
+                    </p>
+                    <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                      {stat.value}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-emerald-400 bg-transparent text-black dark:text-white">
-          <PackageCheck className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">Delivered</p>
-            <p className="text-2xl font-semibold font-poppins">342</p>
+        {/* Current Slides */}
+        <section className="mb-6">
+          <div className="mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+              Slider Management
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Manage your homepage slider content
+            </p>
           </div>
-        </div>
 
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-amber-600 bg-transparent text-black dark:text-white">
-          <ClockAlert className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">Pending</p>
-            <p className="text-2xl font-semibold font-poppins">89</p>
+          <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
+                Current Slides
+              </h3>
+              <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs sm:text-sm font-medium">
+                {slides.length} slides
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+              {slides.map((slide, idx) => (
+                <div
+                  key={idx}
+                  className="group bg-gray-50 dark:bg-gray-900 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex gap-3">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
+                      <img
+                        src={slide.image || "/placeholder.svg"}
+                        alt={slide.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-1 sm:mb-2">
+                        <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white truncate">
+                          {slide.title}
+                        </h4>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="p-1 sm:p-1.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md sm:rounded-lg transition-colors">
+                            <Edit3 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 dark:text-gray-400" />
+                          </button>
+                          <button className="p-1 sm:p-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-md sm:rounded-lg transition-colors">
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-600 dark:text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                        <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium">
+                          {slide.tag}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1 mb-1 sm:mb-2">
+                        {slide.category.map((cat, index) => (
+                          <span
+                            key={index}
+                            className="px-1.5 py-0.5 sm:px-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs"
+                          >
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {slide.detailsPath}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-rose-500 bg-transparent text-black dark:text-white">
-          <PackageX className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">Cancelled</p>
-            <p className="text-2xl font-semibold font-poppins">27</p>
-          </div>
-        </div>
-
-        <div className="rounded-xl p-5 flex items-center gap-4 border-4 border-pink-600 bg-transparent text-black dark:text-white">
-          <Wallet className="w-8 h-8 flex-shrink-0" />
-          <div>
-            <p className="text-base font-medium font-rubik">Refunded</p>
-            <p className="text-2xl font-semibold font-poppins">89</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Slider */}
-      <div className="mb-4">
-        <h2 className="text-2xl sm:text-3xl font-semibold font-rubik text-gray-800 dark:text-gray-100">
-          Slider Component
-        </h2>
-      </div>
-
-      <section className="bg-gray-100 dark:bg-gray-950 p-4 rounded-lg border border-gray-200 dark:border-gray-800 mb-8">
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-            Current Slides
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {slides?.map((slide, idx) => (
-            <div
-              key={idx}
-              className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-4 flex flex-col sm:flex-row gap-4 items-start min-h-[160px]"
-            >
-              {/* Floating Action Icons */}
-              <div className="absolute top-2 right-2 flex gap-2 z-10">
-                <button className="p-2 bg-black bg-opacity-70 hover:bg-opacity-60 text-white rounded-sm transition">
-                  <Edit3 size={16} />
-                </button>
-                <button className="p-2 bg-rose-600 bg-opacity-70 hover:bg-opacity-60 text-white rounded-sm transition">
-                  <Trash2 size={16} />
-                </button>
+        {/* Add New Slide */}
+        <section className="mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4">
+              <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
               </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
+                Add New Slide
+              </h3>
+            </div>
 
-              {/* Square Image */}
-              <div className="w-28 h-28 flex-shrink-0 rounded-md overflow-hidden">
-                <img
-                  src={ps5}
-                  alt={slide.title}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
-              {/* Info Section */}
-              <div className="flex flex-col space-y-2 overflow-hidden">
-                <h3 className="text-base font-semibold text-gray-800 dark:text-white truncate">
-                  {slide.title}
-                </h3>
-
-                <p className="text-sm text-blue-500 truncate">{slide.tag}</p>
-
-                <div className="flex flex-wrap gap-1">
-                  {slide.category.map((cat, index) => (
-                    <span
-                      key={index}
-                      className="text-xs bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              {/* Image Upload */}
+              <div className="md:col-span-1">
+                {!image3 ? (
+                  <div className="aspect-square border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <Image className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400 mb-2 sm:mb-3" />
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3 px-2 text-center">
+                      Upload slide image
+                    </p>
+                    <label className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md sm:rounded-lg cursor-pointer transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <UploadCloud className="w-3 h-3 sm:w-4 sm:h-4" />
+                      Choose File
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleImageChange(e, setImage3)}
+                      />
+                    </label>
+                  </div>
+                ) : (
+                  <div className="relative aspect-square rounded-lg sm:rounded-xl overflow-hidden">
+                    <img
+                      src={image3 || "/placeholder.svg"}
+                      alt="Slide preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      onClick={() => setImage3(null)}
+                      className="absolute top-2 right-2 p-1.5 sm:p-2 bg-red-500 hover:bg-red-600 text-white rounded-md sm:rounded-lg transition-colors"
                     >
-                      {cat}
-                    </span>
-                  ))}
+                      <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Form Fields */}
+              <div className="md:col-span-2 space-y-3 sm:space-y-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    Slide Title
+                  </label>
+                  <textarea
+                    rows={2}
+                    maxLength={40}
+                    value={slideTitle}
+                    onChange={(e) => setSlideTitle(e.target.value)}
+                    placeholder="Enter slide title"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  />
                 </div>
 
-                <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
-                  <span className="text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">
-                    {slide.detailsPath}
-                  </span>
-                </p>
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    Subtitle
+                  </label>
+                  <input
+                    maxLength={50}
+                    value={slideSubtitle}
+                    onChange={(e) => setSlideSubtitle(e.target.value)}
+                    placeholder="Enter slide subtitle"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    Tags
+                  </label>
+                  <input
+                    value={slideTags}
+                    onChange={(e) => setSlideTags(e.target.value)}
+                    placeholder="Enter tags (comma separated)"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    Link URL
+                  </label>
+                  <input
+                    value={slideLink}
+                    onChange={(e) => setSlideLink(e.target.value)}
+                    placeholder="Enter destination URL"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2 sm:pt-4">
+                  <button
+                    onClick={handleAddSlide}
+                    className="px-4 py-2 sm:px-6 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg sm:rounded-xl transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                  >
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                    Add Slide
+                  </button>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Add slides section */}
-      <section className="bg-gray-100 dark:bg-gray-950 p-4 sm:p-6 rounded-md shadow-sm border border-gray-200 dark:border-gray-800 mb-8">
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-            Add New Slides
-          </h2>
-        </div>
-        <div className="flex flex-col md:flex-row gap-6 items-stretch">
-          {/* Left: Square Image Upload */}
-          <div className="flex-shrink-0 aspect-square w-full md:max-w-[300px]">
-            {!image3 ? (
-              <div className="w-full h-full flex flex-col justify-center items-center border border-dashed border-gray-300 dark:border-gray-800 rounded-sm bg-gray-50 dark:bg-gray-900 p-4">
-                <Image size={36} className="text-gray-400 mb-2" />
-                <p className="text-xs text-gray-500 mb-2">No image selected</p>
-
-                <label
-                  htmlFor="slide-image"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-sm cursor-pointer hover:bg-blue-700 transition"
-                >
-                  <UploadCloud size={14} />
-                  Upload
-                </label>
-
-                <input
-                  id="slide-image"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleImageChange(e, setImage3)}
-                />
-              </div>
-            ) : (
-              <div className="relative w-full h-full ">
-                <img
-                  src={image3}
-                  alt="Slide Image"
-                  class
-                  Name="w-full h-full object-cover rounded-sm"
-                />
-                <button
-                  onClick={() => setImage3(null)}
-                  className="absolute top-2 right-2 p-2 bg-black bg-opacity-70 hover:bg-opacity-60 text-white rounded-sm transition"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            )}
+        {/* Homepage Covers */}
+        <section>
+          <div className="mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+              Homepage Covers
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Upload and manage your homepage cover images
+            </p>
           </div>
 
-          {/* Right: Inputs Without Labels */}
-          <div className="flex-1 flex flex-col gap-4">
-            <textarea
-              type="text"
-              rows={3}
-              maxLength={40}
-              placeholder="Slide Title"
-              className="w-full px-3 py-2 text-sm rounded-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+            {/* Cover Image 1 */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                Cover Image 1
+              </h3>
+              {image1 ? (
+                <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden">
+                  <img
+                    src={image1 || "/placeholder.svg"}
+                    alt="Cover 1"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    onClick={() => setImage1(null)}
+                    className="absolute top-2 right-2 p-1.5 sm:p-2 bg-red-500 hover:bg-red-600 text-white rounded-md sm:rounded-lg transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="aspect-video border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Image className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400 mb-2 sm:mb-3" />
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3 px-2 text-center">
+                    Upload cover image
+                  </p>
+                  <label className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md sm:rounded-lg cursor-pointer transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <UploadCloud className="w-3 h-3 sm:w-4 sm:h-4" />
+                    Choose File
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageChange(e, setImage1)}
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
 
-            <input
-              maxLength={50}
-              placeholder="Slide Subtitle"
-              className="w-full px-3 py-2 text-sm rounded-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-            ></input>
-
-            <input
-              type="text"
-              placeholder="Slide Tags"
-              className="w-full px-3 py-2 text-sm rounded-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-            />
-
-            <input
-              type="text"
-              placeholder="Slide Link"
-              className="w-full px-3 py-2 text-sm rounded-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-            />
-
-            <div className="flex justify-end pt-2">
-              <button className="px-5 py-2 text-sm font-medium bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition">
-                Add Slide
-              </button>
+            {/* Cover Image 2 */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-md sm:shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
+                Cover Image 2
+              </h3>
+              {image2 ? (
+                <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden">
+                  <img
+                    src={image2 || "/placeholder.svg"}
+                    alt="Cover 2"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    onClick={() => setImage2(null)}
+                    className="absolute top-2 right-2 p-1.5 sm:p-2 bg-red-500 hover:bg-red-600 text-white rounded-md sm:rounded-lg transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="aspect-video border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Image className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400 mb-2 sm:mb-3" />
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3 px-2 text-center">
+                    Upload cover image
+                  </p>
+                  <label className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md sm:rounded-lg cursor-pointer transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <UploadCloud className="w-3 h-3 sm:w-4 sm:h-4" />
+                    Choose File
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageChange(e, setImage2)}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* HomePage Covers */}
-      <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-semibold font-rubik mb-6 text-gray-900 dark:text-gray-100">
-          HomePage Covers
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Image Uploader 1 */}
-          <div className="relative w-full flex flex-col items-center bg-gray-100 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-sm p-4">
-            {image1 ? (
-              <div className="relative w-full h-40 sm:h-48 rounded-sm overflow-hidden shadow-md">
-                <img
-                  src={image1}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  onClick={() => setImage1(null)}
-                  className="absolute top-2 right-2 p-2 bg-black bg-opacity-70 hover:bg-opacity-60 text-white rounded-sm transition"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="w-full h-40 sm:h-48 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-sm relative">
-                <Image size={36} className="mb-2" />
-                <p className="text-xs sm:text-sm mb-2">No image selected</p>
-                <label
-                  htmlFor="cover1"
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium cursor-pointer text-blue-600 dark:text-blue-400 border border-blue-500 dark:border-blue-400 rounded-sm hover:bg-blue-50 dark:hover:bg-blue-900 transition"
-                >
-                  <UploadCloud size={16} />
-                  Upload Cover Image 1
-                </label>
-              </div>
-            )}
-            <input
-              id="cover1"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => handleImageChange(e, setImage1)}
-            />
-          </div>
-
-          {/* Image Uploader 2 */}
-          <div className="relative w-full flex flex-col items-center bg-gray-100 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-sm p-4">
-            {image2 ? (
-              <div className="relative w-full h-40 sm:h-48 rounded-sm overflow-hidden shadow-md">
-                <img
-                  src={image2}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  onClick={() => setImage2(null)}
-                  className="absolute top-2 right-2 p-2 bg-black bg-opacity-70 hover:bg-opacity-60 text-white rounded-sm transition"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="w-full h-40 sm:h-48 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-sm relative">
-                <Image size={36} className="mb-2" />
-                <p className="text-xs sm:text-sm mb-2">No image selected</p>
-                <label
-                  htmlFor="cover2"
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium cursor-pointer text-blue-600 dark:text-blue-400 border border-blue-500 dark:border-blue-400 rounded-sm hover:bg-blue-50 dark:hover:bg-blue-900 transition"
-                >
-                  <UploadCloud size={16} />
-                  Upload Cover Image 2
-                </label>
-              </div>
-            )}
-            <input
-              id="cover2"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => handleImageChange(e, setImage2)}
-            />
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );

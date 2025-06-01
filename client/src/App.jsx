@@ -22,6 +22,7 @@ import Layout from "./Layout/Layout";
 import AdminLayout from "./Layout/AdminLayout";
 import UsersManagement from "./pages/admin/UsersManagement";
 import UsersSkeleton from "./components/Skeletons/UsersSkeleton";
+import ProductManagement from "./pages/admin/ProductManagement";
 
 function App() {
   const { isLogined, user } = useUserStore((state) => state);
@@ -89,6 +90,7 @@ function App() {
             }
           >
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<ProductManagement />} />
             <Route path="users" element={<UsersManagement />} />
           </Route>
           {/* 404 */}
