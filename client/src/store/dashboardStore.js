@@ -5,6 +5,7 @@ const useDashboardState = create((set) => ({
   totalOrders: 0,
   totalProducts: 0,
   totalSales: 0,
+  isServerActive: false,
 
   updateUsers: (users) =>
     set({
@@ -24,6 +25,11 @@ const useDashboardState = create((set) => ({
   updateSales: (sales) =>
     set({
       totalSales: sales,
+    }),
+
+  updateServerStatus: (status) =>
+    set({
+      isServerActive: status,
     }),
 }));
 

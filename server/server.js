@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import db from "./src/config/db.js";
 import authRouter from "./src/routes/auth.routes.js";
 import adminRouter from "./src/routes/admin.routes.js";
+import productRouter from "./src/routes/product.routes.js";
 
 const app = express();
 db();
@@ -23,8 +24,9 @@ app.use(express.json());
 //routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/product", productRouter);
 
-app.get("/keep-alive", (req, res) => {
+app.get("/api/keep-alive", (req, res) => {
   res.status(200).json({ message: "Keep alive" });
 });
 

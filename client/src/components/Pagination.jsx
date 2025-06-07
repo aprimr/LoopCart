@@ -1,20 +1,13 @@
 import React from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Dot,
-} from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Dot } from "lucide-react";
 
 const Pagination = ({
   currentPage,
-  totalPosts,
-  postsPerPage,
+  totalItems,
+  itemsPerPage,
   onPageChange,
 }) => {
-  const totalPages = Math.ceil(totalPosts / postsPerPage);
-
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   if (totalPages <= 1) return null;
 
   const goToPage = (page) => {
@@ -23,16 +16,18 @@ const Pagination = ({
     }
   };
 
-  const baseBtn = "px-3 py-1 rounded border-2 transition-colors duration-150";
-  const activeBtn = "bg-gray-800 text-white dark:bg-gray-200 dark:text-black";
+  const baseBtn =
+    "px-3 py-1.5 rounded-md border text-sm font-medium transition-colors";
+  const activeBtn =
+    "bg-gray-900 text-white dark:bg-white dark:text-black border-gray-900 dark:border-white";
   const inactiveBtn =
-    "bg-white text-black dark:bg-gray-950 dark:text-white dark:border-gray-600";
+    "bg-white text-black dark:bg-gray-950 dark:text-white border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800";
   const navBtn =
-    "flex items-center gap-1 p-[6px] rounded border-2 transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-600";
+    "p-1.5 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition";
 
   return (
-    <div className="flex items-center gap-2 text-sm font-poppins select-none">
-      {/* Prev Button */}
+    <div className="flex items-center gap-2 text-sm font-medium select-none mt-4">
+      {/* Prev */}
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
@@ -41,7 +36,7 @@ const Pagination = ({
         <ChevronsLeft size={16} />
       </button>
 
-      {/* First Page */}
+      {/* First */}
       <button
         onClick={() => goToPage(1)}
         className={`${baseBtn} ${currentPage === 1 ? activeBtn : inactiveBtn}`}
@@ -49,28 +44,28 @@ const Pagination = ({
         1
       </button>
 
-      {/* Dots before current */}
+      {/* Dots before */}
       {currentPage > 2 && (
-        <span className="text-gray-500 dark:text-gray-400">
+        <span className="text-gray-400 dark:text-gray-500">
           <Dot size={16} />
         </span>
       )}
 
-      {/* Current Page */}
+      {/* Current */}
       {currentPage > 1 && currentPage < totalPages && (
         <button disabled className={`${baseBtn} ${activeBtn}`}>
           {currentPage}
         </button>
       )}
 
-      {/* Dots after current */}
+      {/* Dots after */}
       {currentPage < totalPages - 1 && (
-        <span className="text-gray-500 dark:text-gray-400">
+        <span className="text-gray-400 dark:text-gray-500">
           <Dot size={16} />
         </span>
       )}
 
-      {/* Last Page */}
+      {/* Last */}
       {totalPages !== 1 && (
         <button
           onClick={() => goToPage(totalPages)}
@@ -82,7 +77,7 @@ const Pagination = ({
         </button>
       )}
 
-      {/* Next Button */}
+      {/* Next */}
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}

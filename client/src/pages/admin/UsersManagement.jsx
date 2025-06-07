@@ -64,10 +64,7 @@ function UsersManagement() {
         setIsLoading(false);
       });
     } catch (error) {
-      toast.error("Failed to fetch users", {
-        description: "There was an error loading users",
-        action: { label: "Retry", onClick: () => fetchUsers() },
-      });
+      toast.error("Failed to fetch users");
       setIsLoading(false);
     }
   }, []);
@@ -222,7 +219,7 @@ function UsersManagement() {
         ) : (
           <>
             {/* Desktop Table View - With horizontal scroll */}
-            <div className="hidden md:block overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+            <div className="hidden md:block overflow-scroll rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
               <div className="w-full overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                   <thead className="bg-gray-50 dark:bg-gray-800">
@@ -502,13 +499,19 @@ function UsersManagement() {
                 </div>
               )
             ) : (
-              <div className="flex flex-col items-center justify-center py-8 sm:py-12 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
-                <AlertCircle className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-600 mb-2 sm:mb-3" />
-                <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
-                  No users found
-                </p>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Try adjusting your search or filters
+              <div className="text-center py-16">
+                <div className="relative inline-flex mb-6">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-20 blur-xl animate-pulse" />
+                  <div className="relative z-10 flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 shadow-md">
+                    <AlertCircle className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                  </div>
+                </div>
+
+                <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-3 font-">
+                  No Users found
+                </h3>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 font-poppins">
+                  Try adjusting your search.
                 </p>
               </div>
             )}

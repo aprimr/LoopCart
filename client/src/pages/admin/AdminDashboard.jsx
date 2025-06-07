@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   UsersRound,
   Package,
@@ -18,6 +18,8 @@ import {
   ArrowUpRight,
   Plus,
 } from "lucide-react";
+import axios from "../../services/axios";
+import useDashboardState from "../../store/dashboardStore";
 
 // Mock data and functions
 const mockUser = { fullName: "John Admin" };
@@ -36,6 +38,8 @@ function AdminDashboard() {
   const [slideSubtitle, setSlideSubtitle] = useState("");
   const [slideTags, setSlideTags] = useState("");
   const [slideLink, setSlideLink] = useState("");
+
+  const { isServerActive, updateServerStatus } = useDashboardState();
 
   const slides = [
     {
@@ -117,6 +121,21 @@ function AdminDashboard() {
     },
   ];
 
+  useEffect(() => {
+    const serverStatus = async () => {
+      try {
+        axios.get("/keep-alive").then((res) => {
+          res.status === 200 && updateServerStatus(true);
+        });
+      } catch (error) {
+        updateServerStatus(false);
+      }
+    };
+
+    // Call the serverStatus function
+    serverStatus();
+  }, []);
+
   const handleImageChange = async (e, setImage) => {
     const file = e.target.files[0];
     if (file) {
@@ -155,7 +174,7 @@ function AdminDashboard() {
       <div className="w-full mx-auto px-3 sm:px-4 md:px-6 py-4 md:py-6">
         {/* Header */}
         <header className="mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex gap-2 flex-col sm:flex-row sm:items-center justify-between">
             <div>
               <p className="text-base text-gray-600 dark:text-gray-400 mb-1">
                 Welcome back, {mockUser.fullName}!
@@ -164,19 +183,22 @@ function AdminDashboard() {
                 Dashboard Overview
               </h1>
             </div>
-            <div className="hidden md:flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 rounded-xl">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs sm:text-sm font-medium text-green-700 dark:text-green-300">
-                  Server Online
-                </span>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
-                <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
-                <span className="text-xs sm:text-sm font-medium text-rose-700 dark:text-rose-300">
-                  Server Offline
-                </span>
-              </div>
+            <div className="flex items-center gap-3">
+              {isServerActive ? (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs sm:text-sm font-medium text-green-700 dark:text-green-300">
+                    Server Online
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
+                  <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs sm:text-sm font-medium text-rose-700 dark:text-rose-300">
+                    Server Offline
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </header>
