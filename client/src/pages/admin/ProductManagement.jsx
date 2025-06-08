@@ -9,6 +9,7 @@ import {
   Archive,
   Loader2,
   Upload,
+  RefreshCcw,
 } from "lucide-react";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
 import { FaArrowTrendDown } from "react-icons/fa6";
@@ -32,6 +33,7 @@ function ProductManagement() {
   const updateProductStock = useProductState(
     (state) => state.updateProductStock
   );
+  const updateProduct = useProductState((state) => state.updateProduct);
   const deleteProduct = useProductState((state) => state.deleteProduct);
 
   const [search, setSearch] = useState("");
@@ -259,7 +261,7 @@ function ProductManagement() {
     setUpdateStockLoading(true);
 
     if (!editStock) {
-      toast.error("Please enter a stock value");
+      toast.error("New stock value is required");
       setUpdateStockLoading(false);
       return;
     }
@@ -287,22 +289,49 @@ function ProductManagement() {
     }
   };
 
-  const handleUpdateProduct = () => {
+  const handleUpdateProduct = async () => {
     setEditProductLoading(true);
-    const editedProduct = {
-      productImage: editProductImage,
-      productTitle: editProductTitle,
-      category: editCategory,
-      price: editPrice,
-      discount: editDiscount,
-      sizes: editSizes,
-      colors: editColors,
-      description: editDescription,
-      sponsoredProduct: editSponsoredProduct,
-      freeDelivery: editFreeDelivery,
-      cashOnDelivery: editCashOnDelivery,
-    };
-    console.log(editedProduct);
+    // cleck empty fields
+    if (
+      !editProductImage ||
+      !editProductTitle ||
+      !editCategory ||
+      !editPrice ||
+      !editDescription
+    ) {
+      toast.error("All fields are required");
+      setEditProductLoading(false);
+      return;
+    }
+
+    try {
+      const editedProduct = {
+        productImage: editProductImage,
+        productTitle: editProductTitle,
+        category: editCategory,
+        price: editPrice,
+        discount: editDiscount,
+        sizes: editSizes,
+        colors: editColors,
+        description: editDescription,
+        sponsoredProduct: editSponsoredProduct,
+        freeDelivery: editFreeDelivery,
+        cashOnDelivery: editCashOnDelivery,
+      };
+      const response = await axios.put(
+        `/product/${editProductId}`,
+        editedProduct
+      );
+      if (response.status === 200) {
+        toast.success("Product updated successfully");
+        updateProduct(editProductId, editedProduct);
+        setShowEditProduct(false);
+        setEditProductLoading(false);
+      }
+    } catch (error) {
+      toast.error("Failed to update product");
+      setEditProductLoading(false);
+    }
   };
 
   return (
@@ -346,16 +375,28 @@ function ProductManagement() {
             )}
           </div>
 
-          {/* Add Product Button */}
-          <button
-            onClick={() => {
-              setShowAddProduct(true);
-            }}
-            className="flex items-center justify-center px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg shadow-md transition-transform duration-200 hover:scale-105 text-sm md:text-base"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Add Product
-          </button>
+          {/* Refresh & Add Product Button */}
+          <div className="flex items-center gap-4">
+            <button
+              title="Refresh"
+              onClick={() => {
+                window.location.reload();
+              }}
+              className="group flex items-center justify-center px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg shadow-md transition-transform duration-200 hover:scale-105 text-sm md:text-base"
+            >
+              <RefreshCcw className="w-6 h-6 transform transition-transform duration-500 group-hover:rotate-180" />
+            </button>
+
+            <button
+              onClick={() => {
+                setShowAddProduct(true);
+              }}
+              className="flex items-center justify-center px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg shadow-md transition-transform duration-200 hover:scale-105 text-sm md:text-base"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Add Product
+            </button>
+          </div>
         </div>
 
         {/* All Products */}
@@ -831,14 +872,14 @@ function ProductManagement() {
                 <div className="grid grid-cols-2 gap-4 flex-col sm:flex-row">
                   <button
                     onClick={handlecloseModal}
-                    className="flex-1 px-6 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
+                    className="flex-1 px-6 py-3 text-sm sm:text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleAddProduct}
                     disabled={addProductLoading}
-                    className="flex-1 w-full justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="flex-1 w-full text-sm sm:text-lg justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {addProductLoading ? (
                       <>
@@ -1007,7 +1048,7 @@ function ProductManagement() {
                         <input
                           type="number"
                           className="w-full pr-24 px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white text-sm md:text-base transition-all duration-200 placeholder-gray-400"
-                          placeholder="Enter new stock quantity"
+                          placeholder="New stock quantity"
                           min="0"
                           value={editStock}
                           onChange={(e) => setEditStock(e.target.value)}
@@ -1137,14 +1178,14 @@ function ProductManagement() {
                 <div className="grid grid-cols-2 gap-4 flex-col sm:flex-row">
                   <button
                     onClick={handlecloseModal}
-                    className="flex-1 px-6 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
+                    className="flex-1 px-6 py-3 text-sm sm:text-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleUpdateProduct}
                     disabled={editProductLoading}
-                    className="flex-1 w-full justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="flex-1 w-full text-sm sm:text-lg justify-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {editProductLoading ? (
                       <>

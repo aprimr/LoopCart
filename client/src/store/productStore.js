@@ -18,7 +18,16 @@ const useProductState = create((set) => ({
   },
 
   // update product
-  updateProdutc: () => {},
+  updateProduct: (id, updatedItem) => {
+    set((state) => {
+      const updatedProducts = state.products.map((product) => {
+        return product._id === id ? { ...product, ...updatedItem } : product;
+      });
+      return {
+        products: updatedProducts,
+      };
+    });
+  },
 
   // update product stock
   updateProductStock: (id, newStock) => {

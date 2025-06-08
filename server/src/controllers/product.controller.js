@@ -122,8 +122,73 @@ const addNewStock = async (req, res) => {
   }
 };
 
-const getAllProducts = async (req, res) => {
+// update product
+const updateProduct = async (req, res) => {
+  const id = req.params.id;
+  const {
+    productImage,
+    productTitle,
+    category,
+    price,
+    discount,
+    sizes,
+    colors,
+    sponsoredProduct,
+    freeDelivery,
+    cashOnDelivery,
+    description,
+  } = req.body;
   try {
+    // check the role
+    const currentUser = await User.findById({ _id: req.user.id });
+    if (currentUser.role !== "admin")
+      return res.status(403).json({ message: "Forbidden" });
+
+    // update product
+    const updatedProduct = await Product.updateOne(
+      { _id: id },
+      {
+        $set: {
+          title: productTitle,
+          image: productImage,
+          category,
+          price,
+          discount,
+          sizes,
+          colors,
+          isSponsored: sponsoredProduct,
+          hasFreeDelivery: freeDelivery,
+          hasCOD: cashOnDelivery,
+          description,
+        },
+      }
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json({ message: "Product not found: Error updating product" });
+    }
+
+    res.status(200).json({ message: "Product updated successfully" });
+  } catch (error) {
+    console.log("Error updating product:", error);
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const getAllProducts = async (req, res) => {
+  const user = req.user.id;
+  try {
+    // check the role
+    const currentUser = await User.findById({ _id: user });
+    if (currentUser.role !== "admin")
+      return res.status(403).json({ message: "Forbidden" });
+
+    // fetch all products
     const allproducts = await Product.find({});
     return res.status(200).json({
       message: "Products fetched successfully",
@@ -138,4 +203,10 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-export { addProduct, getAllProducts, deleteProduct, addNewStock };
+export {
+  addProduct,
+  getAllProducts,
+  deleteProduct,
+  addNewStock,
+  updateProduct,
+};
