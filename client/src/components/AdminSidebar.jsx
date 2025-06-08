@@ -11,6 +11,8 @@ import {
   MessageCircle,
   Settings,
   Home,
+  Tag,
+  TicketPercent,
 } from "lucide-react";
 import useUserState from "../store/userStore";
 
@@ -24,14 +26,14 @@ const AdminSidebar = () => {
       path: "/admin/dashboard",
     },
     {
-      name: "Products",
-      icon: <Package className="w-5 h-5 md:w-7 md:h-7" />,
-      path: "/admin/products",
-    },
-    {
       name: "Orders",
       icon: <ClipboardList className="w-5 h-5 md:w-7 md:h-7" />,
       path: "/admin/orders",
+    },
+    {
+      name: "Products",
+      icon: <Package className="w-5 h-5 md:w-7 md:h-7" />,
+      path: "/admin/products",
     },
     {
       name: "Sales",
@@ -39,24 +41,19 @@ const AdminSidebar = () => {
       path: "/admin/sales",
     },
     {
-      name: "Stock",
-      icon: <Layers className="w-5 h-5 md:w-7 md:h-7" />,
-      path: "/admin/stock",
-    },
-    {
       name: "Users",
       icon: <Users className="w-5 h-5 md:w-7 md:h-7" />,
       path: "/admin/users",
     },
     {
-      name: "Finance",
-      icon: <Wallet className="w-5 h-5 md:w-7 md:h-7" />,
-      path: "/admin/finance",
+      name: "Coupons",
+      icon: <TicketPercent className="w-5 h-5 md:w-7 md:h-7" />,
+      path: "/admin/coupons",
     },
     {
       name: "Reviews",
       icon: <Star className="w-5 h-5 md:w-7 md:h-7" />,
-      path: "/admin/finance",
+      path: "/admin/reviews",
     },
     {
       name: "Feedback",
