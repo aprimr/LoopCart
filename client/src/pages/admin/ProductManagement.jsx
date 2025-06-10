@@ -663,7 +663,7 @@ function ProductManagement() {
                               Upload Image
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-500 text-center px-4 mt-1">
-                              PNG, JPG max 5MB
+                              Max size 200 KB
                             </p>
                             <input
                               type="file"
